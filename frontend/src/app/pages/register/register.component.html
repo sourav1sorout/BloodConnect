@@ -33,7 +33,7 @@
           *ngFor="let r of roles"
           class="role-btn"
           [class.active]="selectedRole === r.value"
-          (click)="selectedRole = r.value; registerForm.get('role')?.setValue(r.value)">
+          (click)="selectedRole = r.value; registerForm.get('role').setValue(r.value)">
           <span class="role-icon">{{ r.icon }}</span>
           <div>
             <strong>{{ r.label }}</strong>
@@ -99,7 +99,7 @@
               {{ showPassword ? '🙈' : '👁️' }}
             </button>
           </div>
-          <div class="password-strength" *ngIf="registerForm.get('password')?.value">
+          <div class="password-strength" *ngIf="registerForm.get('password').value">
             <div class="ps-bar">
               <div class="ps-fill" [style.width.%]="passwordStrength.score * 25" [class]="passwordStrength.class"></div>
             </div>

@@ -50,8 +50,8 @@
                     type="button"
                     *ngFor="let bg of bloodGroups"
                     class="bgp-btn"
-                    [class.active]="donorForm.get('bloodGroup')?.value === bg"
-                    (click)="donorForm.get('bloodGroup')?.setValue(bg)">
+                    [class.active]="donorForm.get('bloodGroup').value === bg"
+                    (click)="donorForm.get('bloodGroup').setValue(bg)">
                     {{ bg }}
                   </button>
                 </div>
@@ -61,7 +61,7 @@
               <div class="form-group">
                 <label>Gender *</label>
                 <div class="gender-picker">
-                  <button type="button" *ngFor="let g of ['Male','Female','Other']" class="gp-btn" [class.active]="donorForm.get('gender')?.value===g" (click)="donorForm.get('gender')?.setValue(g)">
+                  <button type="button" *ngFor="let g of ['Male','Female','Other']" class="gp-btn" [class.active]="donorForm.get('gender').value===g" (click)="donorForm.get('gender').setValue(g)">
                     {{ g === 'Male' ? '♂' : g === 'Female' ? '♀' : '⚧' }} {{ g }}
                   </button>
                 </div>
@@ -85,7 +85,7 @@
             <div class="form-group">
               <label>About You (Bio)</label>
               <textarea class="form-control" formControlName="bio" rows="3" placeholder="Share why you donate blood. This appears on your public profile..."></textarea>
-              <span class="hint">{{ donorForm.get('bio')?.value?.length || 0 }}/300 characters</span>
+              <span class="hint">{{ donorForm.get('bio').value.length || 0 }}/300 characters</span>
             </div>
 
             <div class="form-group">
@@ -157,19 +157,19 @@
                 <div class="review-rows">
                   <div class="rr-item">
                     <span>Blood Group</span>
-                    <span class="blood-badge">{{ donorForm.get('bloodGroup')?.value }}</span>
+                    <span class="blood-badge">{{ donorForm.get('bloodGroup').value }}</span>
                   </div>
                   <div class="rr-item">
                     <span>Age</span>
-                    <strong>{{ donorForm.get('age')?.value }} years</strong>
+                    <strong>{{ donorForm.get('age').value }} years</strong>
                   </div>
                   <div class="rr-item">
                     <span>Gender</span>
-                    <strong>{{ donorForm.get('gender')?.value }}</strong>
+                    <strong>{{ donorForm.get('gender').value }}</strong>
                   </div>
-                  <div class="rr-item" *ngIf="donorForm.get('weight')?.value">
+                  <div class="rr-item" *ngIf="donorForm.get('weight').value">
                     <span>Weight</span>
-                    <strong>{{ donorForm.get('weight')?.value }} kg</strong>
+                    <strong>{{ donorForm.get('weight').value }} kg</strong>
                   </div>
                 </div>
               </div>
@@ -178,15 +178,15 @@
                 <div class="review-rows">
                   <div class="rr-item">
                     <span>City</span>
-                    <strong>{{ donorForm.get('city')?.value }}</strong>
+                    <strong>{{ donorForm.get('city').value }}</strong>
                   </div>
                   <div class="rr-item">
                     <span>State</span>
-                    <strong>{{ donorForm.get('state')?.value }}</strong>
+                    <strong>{{ donorForm.get('state').value }}</strong>
                   </div>
-                  <div class="rr-item" *ngIf="donorForm.get('pincode')?.value">
+                  <div class="rr-item" *ngIf="donorForm.get('pincode').value">
                     <span>Pincode</span>
-                    <strong>{{ donorForm.get('pincode')?.value }}</strong>
+                    <strong>{{ donorForm.get('pincode').value }}</strong>
                   </div>
                 </div>
               </div>

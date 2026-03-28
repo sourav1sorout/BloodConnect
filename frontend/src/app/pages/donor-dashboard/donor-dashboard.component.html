@@ -8,16 +8,16 @@
         <div class="sidebar-profile">
           <div class="avatar xl">{{ userInitial }}</div>
           <div class="sp-info">
-            <h4>{{ user?.name }}</h4>
-            <span class="blood-badge">{{ donor?.bloodGroup || '?' }}</span>
+            <h4>{{ user.name }}</h4>
+            <span class="blood-badge">{{ donor.bloodGroup || '?' }}</span>
           </div>
         </div>
 
         <div class="sidebar-avail">
           <div class="avail-label">Availability Status</div>
-          <button class="avail-toggle" [class.available]="donor?.isAvailable" (click)="toggleAvailability()" [disabled]="toggleLoading">
+          <button class="avail-toggle" [class.available]="donor.isAvailable" (click)="toggleAvailability()" [disabled]="toggleLoading">
             <span class="avail-dot"></span>
-            {{ donor?.isAvailable ? 'Available' : 'Unavailable' }}
+            {{ donor.isAvailable ? 'Available' : 'Unavailable' }}
           </button>
         </div>
 
@@ -31,7 +31,7 @@
 
         <div class="sidebar-footer">
           <div class="sf-stat">
-            <strong class="font-display">{{ donor?.totalDonations || 0 }}</strong>
+            <strong class="font-display">{{ donor.totalDonations || 0 }}</strong>
             <small>Total Donations</small>
           </div>
           <div class="sf-stat">
@@ -97,9 +97,9 @@
               </thead>
               <tbody>
                 <tr *ngFor="let r of recentRequests">
-                  <td><div class="flex items-center gap-2"><div class="avatar" style="width:32px;height:32px;font-size:0.8rem">{{ r.requester?.name?.charAt(0) }}</div>{{ r.requester?.name }}</div></td>
+                  <td><div class="flex items-center gap-2"><div class="avatar" style="width:32px;height:32px;font-size:0.8rem">{{ r.requester.name.charAt(0) }}</div>{{ r.requester.name }}</div></td>
                   <td><span class="blood-badge">{{ r.bloodGroup }}</span></td>
-                  <td>{{ r.hospital?.name }}</td>
+                  <td>{{ r.hospital.name }}</td>
                   <td><span class="urgency-badge urgency-{{r.urgency}}">{{ r.urgency }}</span></td>
                   <td><span class="status-badge status-{{r.status}}">{{ r.status }}</span></td>
                   <td>{{ r.createdAt | date:'dd MMM' }}</td>
@@ -137,10 +137,10 @@
           <div class="request-card card" *ngFor="let r of donorRequests" [class]="'urgency-border-' + r.urgency">
             <div class="rc-header">
               <div class="flex items-center gap-3">
-                <div class="avatar lg">{{ r.requester?.name?.charAt(0) }}</div>
+                <div class="avatar lg">{{ r.requester.name.charAt(0) }}</div>
                 <div>
-                  <h4>{{ r.requester?.name }}</h4>
-                  <span class="text-muted" style="font-size:0.85rem">{{ r.requester?.email }}</span>
+                  <h4>{{ r.requester.name }}</h4>
+                  <span class="text-muted" style="font-size:0.85rem">{{ r.requester.email }}</span>
                 </div>
               </div>
               <div class="rc-badges">
@@ -157,7 +157,7 @@
               </div>
               <div class="rcd-item">
                 <span class="rcd-label">Hospital</span>
-                <span class="rcd-val">{{ r.hospital?.name }}, {{ r.hospital?.city }}</span>
+                <span class="rcd-val">{{ r.hospital.name }}, {{ r.hospital.city }}</span>
               </div>
               <div class="rcd-item">
                 <span class="rcd-label">Units</span>

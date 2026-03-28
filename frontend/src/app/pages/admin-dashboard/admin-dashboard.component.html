@@ -30,39 +30,39 @@
         <!-- 9 Stat Cards -->
         <div class="admin-stats-grid" *ngIf="stats">
           <div class="asc red">
-            <strong class="font-display">{{ stats?.totalDonors }}</strong>
+            <strong class="font-display">{{ stats.totalDonors }}</strong>
             <span>Total Donors</span>
           </div>
           <div class="asc green">
-            <strong class="font-display">{{ stats?.approvedDonors }}</strong>
+            <strong class="font-display">{{ stats.approvedDonors }}</strong>
             <span>Approved Donors</span>
           </div>
           <div class="asc orange">
-            <strong class="font-display">{{ stats?.pendingDonors }}</strong>
+            <strong class="font-display">{{ stats.pendingDonors }}</strong>
             <span>Pending Approval</span>
           </div>
           <div class="asc blue">
-            <strong class="font-display">{{ stats?.totalUsers }}</strong>
+            <strong class="font-display">{{ stats.totalUsers }}</strong>
             <span>Total Users</span>
           </div>
           <div class="asc purple">
-            <strong class="font-display">{{ stats?.totalRequests }}</strong>
+            <strong class="font-display">{{ stats.totalRequests }}</strong>
             <span>Total Requests</span>
           </div>
           <div class="asc yellow">
-            <strong class="font-display">{{ stats?.pendingRequests }}</strong>
+            <strong class="font-display">{{ stats.pendingRequests }}</strong>
             <span>Pending Requests</span>
           </div>
           <div class="asc green">
-            <strong class="font-display">{{ stats?.acceptedRequests }}</strong>
+            <strong class="font-display">{{ stats.acceptedRequests }}</strong>
             <span>Accepted Requests</span>
           </div>
           <div class="asc teal">
-            <strong class="font-display">{{ stats?.completedRequests }}</strong>
+            <strong class="font-display">{{ stats.completedRequests }}</strong>
             <span>Completed</span>
           </div>
           <div class="asc pink">
-            <strong class="font-display">{{ stats?.availableDonors }}</strong>
+            <strong class="font-display">{{ stats.availableDonors }}</strong>
             <span>Available Now</span>
           </div>
         </div>
@@ -80,7 +80,7 @@
               <div class="bgs-bar">
                 <div
                   class="bgs-fill"
-                  [style.width.%]="stats?.approvedDonors ? (b.count / (stats?.approvedDonors ?? 1)) * 100 : 0">
+                  [style.width.%]="stats.approvedDonors ? (b.count / (stats.approvedDonors ?? 1)) * 100 : 0">
                 </div>
               </div>
               <span class="bgs-count">{{ b.count }}</span>
@@ -128,14 +128,14 @@
             <div class="activity-stat">
               <span class="as-icon">👤</span>
               <div>
-                <strong class="font-display">{{ stats?.recentRegistrations }}</strong>
+                <strong class="font-display">{{ stats.recentRegistrations }}</strong>
                 <span>New Registrations</span>
               </div>
             </div>
             <div class="activity-stat">
               <span class="as-icon">📩</span>
               <div>
-                <strong class="font-display">{{ stats?.recentRequests }}</strong>
+                <strong class="font-display">{{ stats.recentRequests }}</strong>
                 <span>New Blood Requests</span>
               </div>
             </div>
@@ -192,17 +192,17 @@
                 <td>
                   <div class="flex items-center gap-3">
                     <div class="avatar" style="width:36px;height:36px;font-size:0.9rem;flex-shrink:0">
-                      {{ d.user?.name?.charAt(0) }}
+                      {{ d.user.name.charAt(0) }}
                     </div>
                     <div>
-                      <div style="font-weight:600">{{ d.user?.name }}</div>
-                      <small class="text-muted">{{ d.user?.email }}</small>
+                      <div style="font-weight:600">{{ d.user.name }}</div>
+                      <small class="text-muted">{{ d.user.email }}</small>
                     </div>
                   </div>
                 </td>
                 <td><span class="blood-badge">{{ d.bloodGroup }}</span></td>
                 <td>{{ d.age }} yrs · {{ d.gender }}</td>
-                <td>{{ d.address?.city }}, {{ d.address?.state }}</td>
+                <td>{{ d.address.city }}, {{ d.address.state }}</td>
                 <td>
                   <span class="status-badge" [class]="d.isApproved ? 'status-accepted' : 'status-pending'">
                     {{ d.isApproved ? 'Approved' : 'Pending' }}
@@ -282,7 +282,7 @@
                 <td>
                   <div class="flex items-center gap-3">
                     <div class="avatar" style="width:36px;height:36px;font-size:0.9rem;flex-shrink:0">
-                      {{ u.name?.charAt(0) }}
+                      {{ u.name.charAt(0) }}
                     </div>
                     <div>
                       <div style="font-weight:600">{{ u.name }}</div>
@@ -376,16 +376,16 @@
               <tr *ngFor="let r of requests || []">
                 <td>
                   <div>
-                    <div style="font-weight:600">{{ r.requester?.name }}</div>
-                    <small class="text-muted">{{ r.requester?.phone }}</small>
+                    <div style="font-weight:600">{{ r.requester.name }}</div>
+                    <small class="text-muted">{{ r.requester.phone }}</small>
                   </div>
                 </td>
-                <td>{{ r.donor?.user?.name || '—' }}</td>
+                <td>{{ r.donor.user.name || '—' }}</td>
                 <td><span class="blood-badge">{{ r.bloodGroup }}</span></td>
                 <td>
                   <div>
-                    <div>{{ r.hospital?.name }}</div>
-                    <small class="text-muted">{{ r.hospital?.city }}, {{ r.hospital?.state }}</small>
+                    <div>{{ r.hospital.name }}</div>
+                    <small class="text-muted">{{ r.hospital.city }}, {{ r.hospital.state }}</small>
                   </div>
                 </td>
                 <td>{{ r.unitsRequired }}</td>
@@ -445,8 +445,8 @@
                   {{ log.createdAt | date:'dd MMM yy, HH:mm' }}
                 </td>
                 <td>
-                  <div style="font-weight:600;font-size:0.875rem">{{ log.admin?.name }}</div>
-                  <small class="text-muted">{{ log.admin?.email }}</small>
+                  <div style="font-weight:600;font-size:0.875rem">{{ log.admin.name }}</div>
+                  <small class="text-muted">{{ log.admin.email }}</small>
                 </td>
                 <td>
                   <span class="audit-badge" [class]="auditActionClass(log.action)">

@@ -86,8 +86,8 @@
       <div class="donor-card card card-hover" *ngFor="let donor of donors" (click)="viewDonor(donor._id)">
         <div class="dc-top">
           <div class="avatar xl">
-            <img *ngIf="donor.user?.avatar" [src]="donor.user.avatar" [alt]="donor.user?.name">
-            <span *ngIf="!donor.user?.avatar">{{ donor.user?.name?.charAt(0) || '?' }}</span>
+            <img *ngIf="donor.user.avatar" [src]="donor.user.avatar" [alt]="donor.user.name">
+            <span *ngIf="!donor.user.avatar">{{ donor.user.name.charAt(0) || '?' }}</span>
           </div>
           <div class="dc-badge">
             <span class="blood-badge lg">{{ donor.bloodGroup }}</span>
@@ -95,10 +95,10 @@
         </div>
 
         <div class="dc-body">
-          <h4 class="dc-name">{{ donor.user?.name }}</h4>
+          <h4 class="dc-name">{{ donor.user.name }}</h4>
           <div class="dc-location">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            {{ donor.address?.city }}, {{ donor.address?.state }}
+            {{ donor.address.city }}, {{ donor.address.state }}
           </div>
 
           <div class="dc-meta">
@@ -150,8 +150,8 @@
   <div class="modal-overlay" *ngIf="showRequestModal" (click)="closeModal($event)">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 class="font-display">Request Blood from {{ selectedDonor?.user?.name }}</h3>
-        <span class="blood-badge lg ml-2">{{ selectedDonor?.bloodGroup }}</span>
+        <h3 class="font-display">Request Blood from {{ selectedDonor.user.name }}</h3>
+        <span class="blood-badge lg ml-2">{{ selectedDonor.bloodGroup }}</span>
         <button class="modal-close" (click)="showRequestModal=false">✕</button>
       </div>
 
