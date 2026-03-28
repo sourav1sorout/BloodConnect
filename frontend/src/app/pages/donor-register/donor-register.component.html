@@ -1,0 +1,226 @@
+<!-- pages/donor-register/donor-register.component.html -->
+<div class="page-wrapper">
+  <div class="donor-reg-page">
+
+    <!-- Page Header -->
+    <div class="drp-header">
+      <div class="container">
+        <div class="drp-header-inner">
+          <div>
+            <div class="section-tag" style="display:inline-flex;margin-bottom:12px">Become a Donor</div>
+            <h1 class="font-display">Complete Your Donor Profile</h1>
+            <p>Fill in your details so patients in need can find you. All information is kept private.</p>
+          </div>
+          <div class="drp-hero-icon animate-heartbeat">🩸</div>
+        </div>
+
+        <!-- Steps indicator -->
+        <div class="steps-indicator">
+          <div class="si-step" *ngFor="let s of steps; let i = index" [class.active]="currentStep === i" [class.completed]="currentStep > i" (click)="currentStep > i && (currentStep = i)">
+            <div class="si-dot">
+              <span *ngIf="currentStep <= i">{{ i + 1 }}</span>
+              <span *ngIf="currentStep > i">✓</span>
+            </div>
+            <span class="si-label hide-mobile">{{ s.label }}</span>
+          </div>
+          <div class="si-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top:40px;padding-bottom:80px">
+      <div class="drp-form-wrapper">
+        <form [formGroup]="donorForm" (ngSubmit)="submit()">
+
+          <!-- STEP 1: Personal Info -->
+          <div class="step-panel card" *ngIf="currentStep === 0">
+            <div class="sp-header">
+              <span class="sp-icon">👤</span>
+              <div>
+                <h3 class="font-display">Personal Information</h3>
+                <p>Basic details about yourself as a donor</p>
+              </div>
+            </div>
+
+            <div class="grid grid-2 gap-4 mt-6">
+              <div class="form-group">
+                <label>Blood Group *</label>
+                <div class="blood-group-picker">
+                  <button
+                    type="button"
+                    *ngFor="let bg of bloodGroups"
+                    class="bgp-btn"
+                    [class.active]="donorForm.get('bloodGroup')?.value === bg"
+                    (click)="donorForm.get('bloodGroup')?.setValue(bg)">
+                    {{ bg }}
+                  </button>
+                </div>
+                <span class="error-msg" *ngIf="isInvalid('bloodGroup')">⚠ Select your blood group</span>
+              </div>
+
+              <div class="form-group">
+                <label>Gender *</label>
+                <div class="gender-picker">
+                  <button type="button" *ngFor="let g of ['Male','Female','Other']" class="gp-btn" [class.active]="donorForm.get('gender')?.value===g" (click)="donorForm.get('gender')?.setValue(g)">
+                    {{ g === 'Male' ? '♂' : g === 'Female' ? '♀' : '⚧' }} {{ g }}
+                  </button>
+                </div>
+                <span class="error-msg" *ngIf="isInvalid('gender')">⚠ Select your gender</span>
+              </div>
+
+              <div class="form-group">
+                <label>Age *</label>
+                <input type="number" class="form-control" [class.error]="isInvalid('age')" formControlName="age" placeholder="18-65 years" min="18" max="65" />
+                <span class="hint">Must be between 18-65 years old</span>
+                <span class="error-msg" *ngIf="isInvalid('age')">⚠ Age must be 18-65</span>
+              </div>
+
+              <div class="form-group">
+                <label>Weight (kg)</label>
+                <input type="number" class="form-control" formControlName="weight" placeholder="Minimum 50 kg" min="50" />
+                <span class="hint">Optional but recommended (min 50kg)</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>About You (Bio)</label>
+              <textarea class="form-control" formControlName="bio" rows="3" placeholder="Share why you donate blood. This appears on your public profile..."></textarea>
+              <span class="hint">{{ donorForm.get('bio')?.value?.length || 0 }}/300 characters</span>
+            </div>
+
+            <div class="form-group">
+              <label>Medical Conditions</label>
+              <input type="text" class="form-control" formControlName="medicalConditions" placeholder="None (or list any conditions)" />
+              <span class="hint">This helps ensure safe donation practices</span>
+            </div>
+          </div>
+
+          <!-- STEP 2: Address -->
+          <div class="step-panel card" *ngIf="currentStep === 1">
+            <div class="sp-header">
+              <span class="sp-icon">📍</span>
+              <div>
+                <h3 class="font-display">Location Details</h3>
+                <p>Your location helps patients find nearby donors faster</p>
+              </div>
+            </div>
+
+            <div class="grid grid-2 gap-4 mt-6">
+              <div class="form-group">
+                <label>City *</label>
+                <input type="text" class="form-control" [class.error]="isInvalid('city')" formControlName="city" placeholder="e.g. Mumbai, Delhi, Bengaluru" />
+                <span class="error-msg" *ngIf="isInvalid('city')">⚠ City is required</span>
+              </div>
+
+              <div class="form-group">
+                <label>State *</label>
+                <select class="form-control" [class.error]="isInvalid('state')" formControlName="state">
+                  <option value="">Select State</option>
+                  <option *ngFor="let s of indianStates" [value]="s">{{ s }}</option>
+                </select>
+                <span class="error-msg" *ngIf="isInvalid('state')">⚠ State is required</span>
+              </div>
+
+              <div class="form-group">
+                <label>Street Address</label>
+                <input type="text" class="form-control" formControlName="street" placeholder="House/flat no., area..." />
+              </div>
+
+              <div class="form-group">
+                <label>Pincode</label>
+                <input type="text" class="form-control" formControlName="pincode" placeholder="6-digit pincode" maxlength="6" />
+              </div>
+            </div>
+
+            <div class="location-note alert alert-info">
+              <span class="alert-icon">📍</span>
+              <div>
+                <strong>Why we need your location</strong>
+                <p>Your city and state are shown to patients searching for donors. Your exact address is never displayed publicly.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: Review -->
+          <div class="step-panel card" *ngIf="currentStep === 2">
+            <div class="sp-header">
+              <span class="sp-icon">✅</span>
+              <div>
+                <h3 class="font-display">Review & Submit</h3>
+                <p>Confirm your details before registering</p>
+              </div>
+            </div>
+
+            <div class="review-grid mt-6">
+              <div class="review-section">
+                <h4>Personal Details</h4>
+                <div class="review-rows">
+                  <div class="rr-item">
+                    <span>Blood Group</span>
+                    <span class="blood-badge">{{ donorForm.get('bloodGroup')?.value }}</span>
+                  </div>
+                  <div class="rr-item">
+                    <span>Age</span>
+                    <strong>{{ donorForm.get('age')?.value }} years</strong>
+                  </div>
+                  <div class="rr-item">
+                    <span>Gender</span>
+                    <strong>{{ donorForm.get('gender')?.value }}</strong>
+                  </div>
+                  <div class="rr-item" *ngIf="donorForm.get('weight')?.value">
+                    <span>Weight</span>
+                    <strong>{{ donorForm.get('weight')?.value }} kg</strong>
+                  </div>
+                </div>
+              </div>
+              <div class="review-section">
+                <h4>Location</h4>
+                <div class="review-rows">
+                  <div class="rr-item">
+                    <span>City</span>
+                    <strong>{{ donorForm.get('city')?.value }}</strong>
+                  </div>
+                  <div class="rr-item">
+                    <span>State</span>
+                    <strong>{{ donorForm.get('state')?.value }}</strong>
+                  </div>
+                  <div class="rr-item" *ngIf="donorForm.get('pincode')?.value">
+                    <span>Pincode</span>
+                    <strong>{{ donorForm.get('pincode')?.value }}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="alert alert-warning mt-6">
+              <span class="alert-icon">⏳</span>
+              <div>
+                <strong>Approval Required</strong>
+                <p>Your profile will be reviewed by our admin team. You'll appear in search results once approved (usually within 24 hours).</p>
+              </div>
+            </div>
+
+            <div class="alert alert-danger mt-4" *ngIf="errorMsg">
+              <span class="alert-icon">❌</span>{{ errorMsg }}
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="step-nav">
+            <button type="button" class="btn btn-ghost btn-lg" *ngIf="currentStep > 0" (click)="currentStep = currentStep - 1">
+              ← Back
+            </button>
+            <div style="flex:1"></div>
+            <button type="button" class="btn btn-primary btn-lg" *ngIf="currentStep < 2" (click)="nextStep()">
+              Continue →
+            </button>
+            <button type="submit" class="btn btn-primary btn-lg" *ngIf="currentStep === 2" [class.btn-loading]="loading" [disabled]="loading">
+              {{ loading ? 'Registering...' : '🩸 Register as Donor' }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

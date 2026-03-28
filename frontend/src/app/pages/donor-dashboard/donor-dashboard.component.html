@@ -1,0 +1,266 @@
+<!-- pages/donor-dashboard/donor-dashboard.component.html -->
+<div class="page-wrapper">
+  <div class="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-inner">
+        <div class="sidebar-profile">
+          <div class="avatar xl">{{ userInitial }}</div>
+          <div class="sp-info">
+            <h4>{{ user?.name }}</h4>
+            <span class="blood-badge">{{ donor?.bloodGroup || '?' }}</span>
+          </div>
+        </div>
+
+        <div class="sidebar-avail">
+          <div class="avail-label">Availability Status</div>
+          <button class="avail-toggle" [class.available]="donor?.isAvailable" (click)="toggleAvailability()" [disabled]="toggleLoading">
+            <span class="avail-dot"></span>
+            {{ donor?.isAvailable ? 'Available' : 'Unavailable' }}
+          </button>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button *ngFor="let tab of tabs" class="snav-item" [class.active]="activeTab === tab.id" (click)="activeTab = tab.id">
+            <span class="snav-icon">{{ tab.icon }}</span>
+            <span>{{ tab.label }}</span>
+            <span class="snav-badge" *ngIf="tab.badge">{{ tab.badge }}</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="sf-stat">
+            <strong class="font-display">{{ donor?.totalDonations || 0 }}</strong>
+            <small>Total Donations</small>
+          </div>
+          <div class="sf-stat">
+            <strong class="font-display">{{ pendingCount }}</strong>
+            <small>Pending Requests</small>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+
+      <!-- ===== OVERVIEW TAB ===== -->
+      <div *ngIf="activeTab === 'overview'" class="tab-content animate-fadeIn">
+        <div class="tab-header">
+          <h2 class="font-display">Dashboard Overview</h2>
+          <span class="text-muted" *ngIf="donor">Donor since {{ donor.createdAt | date:'MMMM yyyy' }}</span>
+        </div>
+
+        <!-- Approval Banner -->
+        <div class="alert alert-warning mb-6" *ngIf="donor && !donor.isApproved">
+          <span class="alert-icon">⏳</span>
+          <div>
+            <strong>Pending Admin Approval</strong>
+            <p class="mt-2">Your donor profile is under review. You'll appear in search results once approved.</p>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-row" *ngIf="stats">
+          <div class="stat-card" *ngFor="let s of statCards">
+            <div class="sc-icon">{{ s.icon }}</div>
+            <div class="sc-body">
+              <strong class="sc-value font-display">{{ s.value }}</strong>
+              <span class="sc-label">{{ s.label }}</span>
+            </div>
+            <div class="sc-trend" [class]="s.color">{{ s.trend }}</div>
+          </div>
+        </div>
+
+        <!-- Recent Requests -->
+        <div class="card mt-6">
+          <div class="flex-between mb-4">
+            <h3 class="font-display">Recent Requests</h3>
+            <button class="btn btn-ghost btn-sm" (click)="activeTab='requests'">View All →</button>
+          </div>
+          <div *ngIf="recentRequests.length === 0" class="empty-state" style="padding:40px 20px">
+            <div class="empty-icon">📭</div>
+            <p>No blood requests yet</p>
+          </div>
+          <div class="table-container" *ngIf="recentRequests.length">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Requester</th>
+                  <th>Blood Group</th>
+                  <th>Hospital</th>
+                  <th>Urgency</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let r of recentRequests">
+                  <td><div class="flex items-center gap-2"><div class="avatar" style="width:32px;height:32px;font-size:0.8rem">{{ r.requester?.name?.charAt(0) }}</div>{{ r.requester?.name }}</div></td>
+                  <td><span class="blood-badge">{{ r.bloodGroup }}</span></td>
+                  <td>{{ r.hospital?.name }}</td>
+                  <td><span class="urgency-badge urgency-{{r.urgency}}">{{ r.urgency }}</span></td>
+                  <td><span class="status-badge status-{{r.status}}">{{ r.status }}</span></td>
+                  <td>{{ r.createdAt | date:'dd MMM' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== REQUESTS TAB ===== -->
+      <div *ngIf="activeTab === 'requests'" class="tab-content animate-fadeIn">
+        <div class="tab-header flex-between">
+          <h2 class="font-display">Blood Requests</h2>
+          <div class="flex gap-2">
+            <select class="form-control" style="width:150px" [(ngModel)]="requestFilter" (change)="loadRequests()">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="accepted">Accepted</option>
+              <option value="rejected">Rejected</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div *ngIf="requestsLoading" class="skeleton" style="height:200px;margin-top:24px;"></div>
+
+        <div class="requests-list" *ngIf="!requestsLoading">
+          <div class="empty-state" *ngIf="!donorRequests.length">
+            <div class="empty-icon">📭</div>
+            <h3>No Requests Found</h3>
+            <p>When someone needs your blood type, requests will appear here.</p>
+          </div>
+
+          <div class="request-card card" *ngFor="let r of donorRequests" [class]="'urgency-border-' + r.urgency">
+            <div class="rc-header">
+              <div class="flex items-center gap-3">
+                <div class="avatar lg">{{ r.requester?.name?.charAt(0) }}</div>
+                <div>
+                  <h4>{{ r.requester?.name }}</h4>
+                  <span class="text-muted" style="font-size:0.85rem">{{ r.requester?.email }}</span>
+                </div>
+              </div>
+              <div class="rc-badges">
+                <span class="blood-badge lg">{{ r.bloodGroup }}</span>
+                <span class="urgency-badge urgency-{{r.urgency}}">{{ r.urgency }}</span>
+                <span class="status-badge status-{{r.status}}">{{ r.status }}</span>
+              </div>
+            </div>
+
+            <div class="rc-details">
+              <div class="rcd-item">
+                <span class="rcd-label">Patient</span>
+                <span class="rcd-val">{{ r.patientName }}</span>
+              </div>
+              <div class="rcd-item">
+                <span class="rcd-label">Hospital</span>
+                <span class="rcd-val">{{ r.hospital?.name }}, {{ r.hospital?.city }}</span>
+              </div>
+              <div class="rcd-item">
+                <span class="rcd-label">Units</span>
+                <span class="rcd-val">{{ r.unitsRequired }}</span>
+              </div>
+              <div class="rcd-item">
+                <span class="rcd-label">Contact</span>
+                <span class="rcd-val">{{ r.requesterContact }}</span>
+              </div>
+              <div class="rcd-item">
+                <span class="rcd-label">Needed By</span>
+                <span class="rcd-val">{{ r.neededBy | date:'dd MMM yyyy, HH:mm' }}</span>
+              </div>
+              <div class="rcd-item">
+                <span class="rcd-label">Requested</span>
+                <span class="rcd-val">{{ r.createdAt | date:'dd MMM yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="rc-message card-surface" *ngIf="r.message">
+              <strong>Message:</strong> {{ r.message }}
+            </div>
+
+            <!-- Action Buttons for Pending -->
+            <div class="rc-actions" *ngIf="r.status === 'pending'">
+              <input type="text" class="form-control" placeholder="Optional response message..." [(ngModel)]="responseMessages[r._id]" style="flex:1" />
+              <button class="btn btn-success btn-sm" (click)="respond(r._id, 'accepted', responseMessages[r._id])">✓ Accept</button>
+              <button class="btn btn-danger btn-sm" (click)="respond(r._id, 'rejected', responseMessages[r._id])">✕ Reject</button>
+            </div>
+
+            <div class="rc-response" *ngIf="r.responseMessage">
+              <strong>Your response:</strong> {{ r.responseMessage }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PROFILE TAB ===== -->
+      <div *ngIf="activeTab === 'profile'" class="tab-content animate-fadeIn">
+        <div class="tab-header">
+          <h2 class="font-display">Edit Donor Profile</h2>
+        </div>
+
+        <div class="card" *ngIf="profileForm">
+          <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+            <h4 class="section-title">Personal Information</h4>
+            <div class="grid grid-2 gap-4">
+              <div class="form-group">
+                <label>Blood Group</label>
+                <select class="form-control" formControlName="bloodGroup">
+                  <option *ngFor="let bg of bloodGroups" [value]="bg">{{ bg }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Age</label>
+                <input type="number" class="form-control" formControlName="age" min="18" max="65" />
+              </div>
+              <div class="form-group">
+                <label>Gender</label>
+                <select class="form-control" formControlName="gender">
+                  <option>Male</option><option>Female</option><option>Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Weight (kg)</label>
+                <input type="number" class="form-control" formControlName="weight" min="50" />
+              </div>
+            </div>
+
+            <h4 class="section-title mt-4">Address</h4>
+            <div class="grid grid-2 gap-4">
+              <div class="form-group">
+                <label>City *</label>
+                <input type="text" class="form-control" formControlName="city" />
+              </div>
+              <div class="form-group">
+                <label>State *</label>
+                <input type="text" class="form-control" formControlName="state" />
+              </div>
+              <div class="form-group">
+                <label>Pincode</label>
+                <input type="text" class="form-control" formControlName="pincode" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Bio (optional)</label>
+              <textarea class="form-control" formControlName="bio" rows="3" placeholder="Tell others why you donate..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Medical Conditions</label>
+              <input type="text" class="form-control" formControlName="medicalConditions" placeholder="None" />
+            </div>
+
+            <div class="alert alert-success" *ngIf="profileSuccess">✅ Profile updated successfully!</div>
+
+            <button type="submit" class="btn btn-primary" [class.btn-loading]="profileLoading" [disabled]="profileLoading">
+              {{ profileLoading ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>

@@ -1,0 +1,218 @@
+<!-- pages/search-donor/search-donor.component.html -->
+<div class="page-wrapper">
+
+  <!-- Page Hero -->
+  <div class="search-hero">
+    <div class="container">
+      <h1 class="font-display">Find Blood Donors</h1>
+      <p>Search from thousands of verified donors across India</p>
+
+      <!-- Search Bar -->
+      <div class="search-bar card">
+        <div class="search-fields">
+          <div class="sf-group">
+            <label>Blood Group</label>
+            <select class="form-control" [(ngModel)]="filters.bloodGroup" (change)="search()">
+              <option value="">All Groups</option>
+              <option *ngFor="let bg of bloodGroups" [value]="bg">{{ bg }}</option>
+            </select>
+          </div>
+          <div class="sf-group">
+            <label>City</label>
+            <input type="text" class="form-control" placeholder="Enter city..." [(ngModel)]="filters.city" (keyup.enter)="search()" />
+          </div>
+          <div class="sf-group">
+            <label>State</label>
+            <input type="text" class="form-control" placeholder="Enter state..." [(ngModel)]="filters.state" (keyup.enter)="search()" />
+          </div>
+          <div class="sf-group">
+            <label>Availability</label>
+            <select class="form-control" [(ngModel)]="filters.isAvailable" (change)="search()">
+              <option value="">All</option>
+              <option value="true">Available Only</option>
+              <option value="false">Unavailable</option>
+            </select>
+          </div>
+        </div>
+        <div class="search-actions">
+          <button class="btn btn-primary" (click)="search()" [class.btn-loading]="loading">
+            <svg *ngIf="!loading" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            {{ loading ? 'Searching...' : 'Search' }}
+          </button>
+          <button class="btn btn-ghost" (click)="clearFilters()">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container section-sm">
+
+    <!-- Results Header -->
+    <div class="results-header flex-between mb-6" *ngIf="!loading">
+      <div class="results-info">
+        <span class="results-count" *ngIf="meta">{{ meta.total }} donors found</span>
+        <span class="active-filters" *ngIf="hasActiveFilters">
+          <span class="filter-pill" *ngIf="filters.bloodGroup">
+            {{ filters.bloodGroup }}
+            <button (click)="filters.bloodGroup=''; search()">✕</button>
+          </span>
+          <span class="filter-pill" *ngIf="filters.city">
+            {{ filters.city }}
+            <button (click)="filters.city=''; search()">✕</button>
+          </span>
+          <span class="filter-pill" *ngIf="filters.state">
+            {{ filters.state }}
+            <button (click)="filters.state=''; search()">✕</button>
+          </span>
+        </span>
+      </div>
+      <div class="view-toggle">
+        <button class="btn btn-sm" [class.btn-primary]="viewMode==='grid'" [class.btn-ghost]="viewMode!=='grid'" (click)="viewMode='grid'">⊞ Grid</button>
+        <button class="btn btn-sm" [class.btn-primary]="viewMode==='list'" [class.btn-ghost]="viewMode!=='list'" (click)="viewMode='list'">☰ List</button>
+      </div>
+    </div>
+
+    <!-- Loading Skeletons -->
+    <div class="donors-grid" *ngIf="loading">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6]">
+        <div class="skeleton" style="height:100px;margin-bottom:16px;border-radius:16px;"></div>
+        <div class="skeleton" style="height:16px;width:60%;margin-bottom:8px;"></div>
+        <div class="skeleton" style="height:14px;width:40%;"></div>
+      </div>
+    </div>
+
+    <!-- Donors Grid -->
+    <div [class]="viewMode === 'grid' ? 'donors-grid' : 'donors-list'" *ngIf="!loading && donors.length">
+      <div class="donor-card card card-hover" *ngFor="let donor of donors" (click)="viewDonor(donor._id)">
+        <div class="dc-top">
+          <div class="avatar xl">
+            <img *ngIf="donor.user?.avatar" [src]="donor.user.avatar" [alt]="donor.user?.name">
+            <span *ngIf="!donor.user?.avatar">{{ donor.user?.name?.charAt(0) || '?' }}</span>
+          </div>
+          <div class="dc-badge">
+            <span class="blood-badge lg">{{ donor.bloodGroup }}</span>
+          </div>
+        </div>
+
+        <div class="dc-body">
+          <h4 class="dc-name">{{ donor.user?.name }}</h4>
+          <div class="dc-location">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {{ donor.address?.city }}, {{ donor.address?.state }}
+          </div>
+
+          <div class="dc-meta">
+            <span class="dc-meta-item">{{ donor.age }} yrs</span>
+            <span class="dc-meta-sep">•</span>
+            <span class="dc-meta-item">{{ donor.gender }}</span>
+            <span class="dc-meta-sep">•</span>
+            <span class="dc-meta-item">{{ donor.totalDonations }} donations</span>
+          </div>
+
+          <div class="dc-status">
+            <span class="status-badge" [class]="donor.isAvailable ? 'status-available' : 'status-unavailable'">
+              {{ donor.isAvailable ? 'Available' : 'Unavailable' }}
+            </span>
+            <span class="dc-since">Since {{ donor.createdAt | date:'MMM yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="dc-actions" (click)="$event.stopPropagation()">
+          <button class="btn btn-outline btn-sm" (click)="viewDonor(donor._id)">View Profile</button>
+          <button
+            class="btn btn-primary btn-sm"
+            *ngIf="donor.isAvailable && isLoggedIn"
+            (click)="openRequest(donor)">
+            Request Blood
+          </button>
+          <a routerLink="/login" class="btn btn-sm btn-ghost" *ngIf="!isLoggedIn">Login to Request</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!loading && !donors.length">
+      <div class="empty-icon">🔍</div>
+      <h3>No Donors Found</h3>
+      <p>Try adjusting your search filters or check a different city. New donors register every day!</p>
+      <button class="btn btn-outline mt-4" (click)="clearFilters()">Clear All Filters</button>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="meta && meta.totalPages > 1">
+      <button [disabled]="!meta.hasPrevPage" (click)="changePage(meta.page - 1)">‹</button>
+      <button *ngFor="let p of getPages()" [class.active]="p === meta.page" (click)="changePage(p)">{{ p }}</button>
+      <button [disabled]="!meta.hasNextPage" (click)="changePage(meta.page + 1)">›</button>
+    </div>
+  </div>
+
+  <!-- Blood Request Modal -->
+  <div class="modal-overlay" *ngIf="showRequestModal" (click)="closeModal($event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="font-display">Request Blood from {{ selectedDonor?.user?.name }}</h3>
+        <span class="blood-badge lg ml-2">{{ selectedDonor?.bloodGroup }}</span>
+        <button class="modal-close" (click)="showRequestModal=false">✕</button>
+      </div>
+
+      <form [formGroup]="requestForm" (ngSubmit)="submitRequest()" class="mt-4">
+        <div class="grid grid-2 gap-4">
+          <div class="form-group">
+            <label>Patient Name *</label>
+            <input type="text" class="form-control" formControlName="patientName" placeholder="Full name of patient" />
+          </div>
+          <div class="form-group">
+            <label>Your Contact *</label>
+            <input type="tel" class="form-control" formControlName="requesterContact" placeholder="10-digit number" />
+          </div>
+          <div class="form-group">
+            <label>Hospital Name *</label>
+            <input type="text" class="form-control" formControlName="hospitalName" placeholder="Hospital name" />
+          </div>
+          <div class="form-group">
+            <label>Units Required *</label>
+            <select class="form-control" formControlName="unitsRequired">
+              <option *ngFor="let u of [1,2,3,4,5]" [value]="u">{{ u }} Unit{{ u>1?'s':'' }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>City *</label>
+            <input type="text" class="form-control" formControlName="hospitalCity" placeholder="City" />
+          </div>
+          <div class="form-group">
+            <label>State *</label>
+            <input type="text" class="form-control" formControlName="hospitalState" placeholder="State" />
+          </div>
+          <div class="form-group">
+            <label>Urgency Level *</label>
+            <select class="form-control" formControlName="urgency">
+              <option value="normal">Normal</option>
+              <option value="urgent">Urgent</option>
+              <option value="critical">Critical (Emergency)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Needed By *</label>
+            <input type="datetime-local" class="form-control" formControlName="neededBy" [min]="minDate" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Message (optional)</label>
+          <textarea class="form-control" formControlName="message" rows="3" placeholder="Additional details about the situation..."></textarea>
+        </div>
+
+        <div class="alert alert-danger" *ngIf="requestError">
+          <span class="alert-icon">❌</span>{{ requestError }}
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" (click)="showRequestModal=false">Cancel</button>
+          <button type="submit" class="btn btn-primary" [class.btn-loading]="requestLoading" [disabled]="requestLoading">
+            {{ requestLoading ? 'Sending...' : 'Send Blood Request' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

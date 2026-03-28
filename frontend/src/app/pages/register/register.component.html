@@ -1,0 +1,152 @@
+<!-- pages/register/register.component.html -->
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="brand-icon animate-heartbeat">🩸</div>
+      <h1>JOIN THE<br>MISSION</h1>
+      <p>Register today and become part of a lifesaving network. Your blood can be someone's second chance.</p>
+    </div>
+    <div class="auth-steps">
+      <div class="astep" *ngFor="let s of regSteps; let i = index">
+        <div class="astep-num font-display">{{ i + 1 }}</div>
+        <div>
+          <strong>{{ s.title }}</strong>
+          <small>{{ s.desc }}</small>
+        </div>
+      </div>
+    </div>
+    <div class="auth-quote">
+      <blockquote>"Blood has no religion, no caste. It's just humanity flowing through us."</blockquote>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-box animate-slideUp">
+      <div class="auth-header">
+        <h2>Create Account</h2>
+        <p>Join thousands saving lives across India</p>
+      </div>
+
+      <!-- Role Selector -->
+      <div class="role-selector mb-6">
+        <button
+          *ngFor="let r of roles"
+          class="role-btn"
+          [class.active]="selectedRole === r.value"
+          (click)="selectedRole = r.value; registerForm.get('role')?.setValue(r.value)">
+          <span class="role-icon">{{ r.icon }}</span>
+          <div>
+            <strong>{{ r.label }}</strong>
+            <small>{{ r.desc }}</small>
+          </div>
+        </button>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="grid grid-2 gap-4">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input
+              type="text"
+              class="form-control"
+              [class.error]="isInvalid('name')"
+              formControlName="name"
+              placeholder="Your full name"
+              autocomplete="name"
+            />
+            <span class="error-msg" *ngIf="isInvalid('name')">⚠ {{ getError('name') }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input
+              type="tel"
+              class="form-control"
+              [class.error]="isInvalid('phone')"
+              formControlName="phone"
+              placeholder="10-digit number"
+              autocomplete="tel"
+            />
+            <span class="error-msg" *ngIf="isInvalid('phone')">⚠ Enter valid 10-digit number</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input
+            type="email"
+            class="form-control"
+            [class.error]="isInvalid('email')"
+            formControlName="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+          />
+          <span class="error-msg" *ngIf="isInvalid('email')">⚠ {{ getError('email') }}</span>
+        </div>
+
+        <div class="form-group">
+          <label>Password *</label>
+          <div class="input-with-toggle">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control"
+              [class.error]="isInvalid('password')"
+              formControlName="password"
+              placeholder="Min 8 chars, uppercase + number"
+              autocomplete="new-password"
+            />
+            <button type="button" class="toggle-pass" (click)="showPassword = !showPassword">
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
+          <div class="password-strength" *ngIf="registerForm.get('password')?.value">
+            <div class="ps-bar">
+              <div class="ps-fill" [style.width.%]="passwordStrength.score * 25" [class]="passwordStrength.class"></div>
+            </div>
+            <span class="ps-label" [class]="passwordStrength.class">{{ passwordStrength.label }}</span>
+          </div>
+          <span class="error-msg" *ngIf="isInvalid('password')">⚠ {{ getError('password') }}</span>
+        </div>
+
+        <div class="form-group">
+          <label>Confirm Password *</label>
+          <input
+            type="password"
+            class="form-control"
+            [class.error]="isInvalid('confirmPassword')"
+            formControlName="confirmPassword"
+            placeholder="Repeat password"
+          />
+          <span class="error-msg" *ngIf="isInvalid('confirmPassword')">⚠ Passwords do not match</span>
+        </div>
+
+        <div class="terms-check form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="agreeTerms" />
+            <span class="checkmark"></span>
+            I agree to the <a href="#" (click)="$event.preventDefault()">Terms of Service</a> and <a href="#" (click)="$event.preventDefault()">Privacy Policy</a>
+          </label>
+          <span class="error-msg" *ngIf="isInvalid('agreeTerms')">⚠ You must agree to continue</span>
+        </div>
+
+        <div class="alert alert-danger" *ngIf="errorMsg">
+          <span class="alert-icon">❌</span>{{ errorMsg }}
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-full btn-lg"
+          [class.btn-loading]="loading"
+          [disabled]="loading">
+          <span *ngIf="!loading">Create Account</span>
+          <span *ngIf="loading">Creating account...</span>
+        </button>
+      </form>
+
+      <div class="auth-divider"><span>already have an account?</span></div>
+      <div class="auth-footer">
+        <a routerLink="/login" class="btn btn-outline w-full">Login Instead</a>
+      </div>
+    </div>
+  </div>
+</div>

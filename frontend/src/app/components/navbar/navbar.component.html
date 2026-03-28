@@ -1,0 +1,93 @@
+<!-- components/navbar/navbar.component.html -->
+<nav class="navbar" [class.scrolled]="isScrolled" [class.menu-open]="menuOpen">
+  <div class="container">
+    <div class="nav-inner">
+
+      <!-- Logo -->
+      <a routerLink="/" class="nav-logo" (click)="closeMenu()">
+        <div class="logo-icon">
+          <span class="drop">🩸</span>
+        </div>
+        <div class="logo-text">
+          <span class="logo-main">BLOOD</span>
+          <span class="logo-sub">CONNECT</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <ul class="nav-links hide-mobile">
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a></li>
+        <li><a routerLink="/search" routerLinkActive="active">Find Donors</a></li>
+        <li *ngIf="!isLoggedIn"><a routerLink="/register" class="nav-link-cta">Become a Donor</a></li>
+        <li *ngIf="isDonor && isLoggedIn"><a routerLink="/dashboard" routerLinkActive="active">My Dashboard</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/admin" routerLinkActive="active">Admin</a></li>
+      </ul>
+
+      <!-- Auth Buttons -->
+      <div class="nav-actions hide-mobile">
+        <ng-container *ngIf="!isLoggedIn">
+          <a routerLink="/login" class="btn btn-ghost btn-sm">Login</a>
+          <a routerLink="/register" class="btn btn-primary btn-sm">Sign Up</a>
+        </ng-container>
+        <ng-container *ngIf="isLoggedIn">
+          <div class="nav-user" (click)="toggleDropdown()" #userBtn>
+            <div class="avatar">{{ userInitial }}</div>
+            <div class="user-info hide-tablet">
+              <span class="user-name">{{ userName }}</span>
+              <span class="user-role">{{ userRole }}</span>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron" [class.rotated]="dropdownOpen">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
+
+          <!-- Dropdown Menu -->
+          <div class="dropdown" *ngIf="dropdownOpen" (click)="closeDropdown()">
+            <a routerLink="/search" class="dropdown-item">
+              <span class="di-icon">🔍</span> Find Donors
+            </a>
+            <a *ngIf="!isDonor && !isAdmin" routerLink="/donor-register" class="dropdown-item highlight">
+              <span class="di-icon">❤️</span> Become a Donor
+            </a>
+            <a *ngIf="isDonor" routerLink="/dashboard" class="dropdown-item">
+              <span class="di-icon">📊</span> My Dashboard
+            </a>
+            <a *ngIf="isAdmin" routerLink="/admin" class="dropdown-item">
+              <span class="di-icon">⚙️</span> Admin Panel
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item danger" (click)="logout()">
+              <span class="di-icon">🚪</span> Logout
+            </button>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button class="hamburger" (click)="toggleMenu()" [class.active]="menuOpen" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" [class.open]="menuOpen">
+    <ul class="mobile-links">
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="closeMenu()">Home</a></li>
+      <li><a routerLink="/search" routerLinkActive="active" (click)="closeMenu()">Find Donors</a></li>
+      <ng-container *ngIf="!isLoggedIn">
+        <li><a routerLink="/login" (click)="closeMenu()">Login</a></li>
+        <li><a routerLink="/register" class="mobile-cta" (click)="closeMenu()">Sign Up Free</a></li>
+      </ng-container>
+      <ng-container *ngIf="isLoggedIn">
+        <li *ngIf="isDonor"><a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">My Dashboard</a></li>
+        <li *ngIf="!isDonor && !isAdmin"><a routerLink="/donor-register" (click)="closeMenu()">Become a Donor</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/admin" (click)="closeMenu()">Admin Panel</a></li>
+        <li><button class="mobile-logout" (click)="logout()">Logout</button></li>
+      </ng-container>
+    </ul>
+  </div>
+</nav>
+
+<!-- Backdrop for dropdown -->
+<div class="nav-backdrop" *ngIf="dropdownOpen" (click)="closeDropdown()"></div>

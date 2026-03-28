@@ -1,0 +1,125 @@
+// register.component.scss
+@import '../login/login.component.scss';
+
+.auth-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.astep {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+
+  .astep-num {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    color: white;
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+
+  strong { display: block; color: white; font-size: 0.9375rem; margin-bottom: 2px; }
+  small { color: rgba(255,255,255,0.7); font-size: 0.8125rem; }
+}
+
+// Role Selector
+.role-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.role-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: left;
+  font-family: var(--font-body);
+
+  .role-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+  strong { display: block; font-size: 0.9375rem; color: var(--text-primary); margin-bottom: 2px; }
+  small { display: block; font-size: 0.8rem; color: var(--text-muted); }
+
+  &:hover { border-color: var(--blood-pale); background: var(--off-white); }
+
+  &.active {
+    border-color: var(--blood-red);
+    background: var(--danger-light);
+    box-shadow: 0 0 0 3px rgba(193,18,31,0.08);
+
+    strong { color: var(--blood-red); }
+  }
+}
+
+// Password Strength
+.password-strength {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+
+  .ps-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .ps-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    &.weak { background: #e74c3c; }
+    &.fair { background: #f39c12; }
+    &.good { background: #2ecc71; }
+    &.strong { background: #27ae60; }
+  }
+
+  .ps-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 44px;
+    &.weak { color: #e74c3c; }
+    &.fair { color: #f39c12; }
+    &.good { color: #2ecc71; }
+    &.strong { color: #27ae60; }
+  }
+}
+
+// Checkbox
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+
+  input[type="checkbox"] {
+    width: 18px; height: 18px;
+    margin-top: 1px;
+    accent-color: var(--blood-red);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  a { color: var(--blood-red); font-weight: 600; }
+}
+
+.terms-check { margin-bottom: var(--sp-5); }

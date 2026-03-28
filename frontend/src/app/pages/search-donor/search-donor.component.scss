@@ -1,0 +1,224 @@
+// search-donor.component.scss
+.search-hero {
+  background: linear-gradient(160deg, var(--blood-dark), var(--blood-red));
+  padding: calc(var(--nav-height) + 40px) 0 0;
+  text-align: center;
+  color: white;
+
+  h1 { color: white; font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 8px; }
+  p { color: rgba(255,255,255,0.8); font-size: 1.05rem; margin-bottom: 32px; }
+}
+
+.search-bar {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 28px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  transform: translateY(1px);
+  border-bottom: none;
+}
+
+.search-fields {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+
+  .sf-group {
+    label { display: block; font-size: 0.8125rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  }
+}
+
+.search-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.results-header {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.results-count {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: 12px;
+}
+
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--danger-light);
+  color: var(--blood-red);
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: 1px solid rgba(193,18,31,0.2);
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--blood-red);
+    font-size: 0.75rem;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.7;
+    &:hover { opacity: 1; }
+  }
+}
+
+.view-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+// Donors Grid
+.donors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.donors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .donor-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: center;
+
+    .dc-top { flex-direction: row; gap: 12px; align-items: center; }
+  }
+}
+
+// Donor Card
+.donor-card {
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.dc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+
+  .avatar { border: 3px solid var(--border); }
+}
+
+.dc-body { margin-bottom: 16px; }
+
+.dc-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
+
+.dc-location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 10px;
+
+  svg { flex-shrink: 0; }
+}
+
+.dc-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+
+  .dc-meta-sep { color: var(--border-strong); }
+}
+
+.dc-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dc-since {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.dc-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+// Skeleton Card
+.skeleton-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  border: 1px solid var(--border);
+}
+
+// Modal
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+
+  h3 { flex: 1; font-size: 1.4rem; }
+
+  .modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    padding: 4px 8px;
+    border-radius: var(--radius-md);
+    transition: all var(--transition);
+    &:hover { background: var(--surface); color: var(--text-primary); }
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.ml-2 { margin-left: var(--sp-2); }
+
+@media (max-width: 768px) {
+  .search-fields { grid-template-columns: 1fr 1fr; }
+  .search-actions { justify-content: stretch; .btn { flex: 1; } }
+  .donors-list .donor-card { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .search-fields { grid-template-columns: 1fr; }
+}

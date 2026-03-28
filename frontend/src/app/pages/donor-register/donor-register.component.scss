@@ -1,0 +1,225 @@
+// donor-register.component.scss
+.drp-header {
+  background: linear-gradient(160deg, var(--blood-dark), var(--blood-red));
+  padding: calc(var(--nav-height) + 32px) 0 0;
+  color: white;
+}
+
+.drp-header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+
+  h1 { color: white; font-size: clamp(1.8rem,3.5vw,3rem); margin-bottom: 8px; }
+  p { color: rgba(255,255,255,0.8); font-size: 1rem; }
+
+  .drp-hero-icon {
+    font-size: 5rem;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3));
+    @media (max-width:640px) { display: none; }
+  }
+}
+
+// Steps Indicator
+.steps-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(0,0,0,0.2);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: 20px 32px;
+  position: relative;
+}
+
+.si-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  transition: opacity var(--transition);
+
+  &:not(.active):not(.completed) { opacity: 0.5; }
+
+  .si-dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+    transition: all var(--transition);
+  }
+
+  .si-label {
+    color: rgba(255,255,255,0.9);
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  &.active .si-dot {
+    background: white;
+    color: var(--blood-red);
+    border-color: white;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.2);
+  }
+
+  &.completed .si-dot {
+    background: rgba(45,106,79,0.8);
+    border-color: #52B788;
+    color: white;
+  }
+}
+
+.si-line {
+  position: absolute;
+  left: 48px; right: 48px;
+  top: 50%;
+  height: 2px;
+  background: rgba(255,255,255,0.2);
+  z-index: 0;
+}
+
+// Form Wrapper
+.drp-form-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+// Step Panel
+.step-panel {
+  padding: 40px;
+  margin-bottom: 24px;
+}
+
+.sp-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border);
+
+  .sp-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+    background: var(--danger-light);
+    width: 56px; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+  }
+
+  h3 { font-size: 1.6rem; margin-bottom: 4px; }
+  p { font-size: 0.9375rem; color: var(--text-muted); }
+}
+
+// Blood Group Picker
+.blood-group-picker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.bgp-btn {
+  padding: 12px 8px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  color: var(--text-secondary);
+
+  &:hover { border-color: var(--blood-pale); background: var(--surface); }
+  &.active {
+    background: var(--blood-red);
+    border-color: var(--blood-red);
+    color: white;
+    box-shadow: 0 4px 12px rgba(193,18,31,0.35);
+    transform: scale(1.05);
+  }
+}
+
+// Gender Picker
+.gender-picker {
+  display: flex;
+  gap: 10px;
+}
+
+.gp-btn {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+
+  &:hover { border-color: var(--blood-pale); }
+  &.active {
+    border-color: var(--blood-red);
+    background: var(--danger-light);
+    color: var(--blood-red);
+    font-weight: 700;
+  }
+}
+
+// Review
+.review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.review-section {
+  h4 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+}
+
+.review-rows { display: flex; flex-direction: column; gap: 10px; }
+.rr-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+
+  &:last-child { border-bottom: none; }
+  span:first-child { font-size: 0.875rem; color: var(--text-muted); }
+  strong { font-size: 0.9375rem; color: var(--text-primary); }
+}
+
+// Step Nav
+.step-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 40px;
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 640px) {
+  .step-panel { padding: 24px 20px; }
+  .review-grid { grid-template-columns: 1fr; }
+  .blood-group-picker { grid-template-columns: repeat(4, 1fr); }
+  .step-nav { padding: 20px; }
+}

@@ -1,0 +1,184 @@
+<!-- pages/home/home.component.html -->
+<div class="home">
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="hero-grid"></div>
+    </div>
+
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-content animate-slideUp">
+          <div class="hero-tag">
+            <span class="tag-dot"></span>
+            <span>Save Lives. Donate Blood.</span>
+          </div>
+
+          <h1 class="hero-title">
+            Every Drop
+            <span class="title-accent">Saves A</span>
+            Life
+          </h1>
+
+          <p class="hero-desc">
+            Connect blood donors with those in need. Real-time search, instant requests, and a community that cares. Join thousands making a difference every day.
+          </p>
+
+          <div class="hero-actions">
+            <a routerLink="/search" class="btn btn-primary btn-lg">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              Find Donors Now
+            </a>
+            <a routerLink="/register" class="btn btn-outline btn-lg">Become a Donor</a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="hstat" *ngFor="let s of heroStats">
+              <strong class="hstat-num font-display">{{ s.value }}</strong>
+              <span class="hstat-label">{{ s.label }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hv-card-main">
+            <div class="hv-icon animate-heartbeat">🩸</div>
+            <div class="hv-title font-display">Blood Available</div>
+            <div class="blood-groups-grid">
+              <span class="blood-badge" *ngFor="let bg of bloodGroups">{{ bg }}</span>
+            </div>
+            <div class="hv-avail">
+              <span class="status-badge status-available">Live donors online</span>
+            </div>
+          </div>
+
+          <div class="hv-card-float top-right">
+            <span>🎉</span>
+            <div>
+              <strong>Request Accepted!</strong>
+              <small>O+ found in 8 mins</small>
+            </div>
+          </div>
+
+          <div class="hv-card-float bottom-left">
+            <span>❤️</span>
+            <div>
+              <strong>New Donor</strong>
+              <small>Registered today</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="section how-it-works">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="section-tag">Simple Process</div>
+        <h2>How BloodConnect Works</h2>
+        <p>Three simple steps to connect donors with those in need</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card" *ngFor="let step of steps; let i = index">
+          <div class="step-number font-display">0{{ i + 1 }}</div>
+          <div class="step-icon">{{ step.icon }}</div>
+          <h4>{{ step.title }}</h4>
+          <p>{{ step.desc }}</p>
+          <div class="step-connector" *ngIf="i < steps.length - 1"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BLOOD GROUP INFO ===== -->
+  <section class="section bg-surface blood-info">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="section-tag">Blood Compatibility</div>
+        <h2>Know Your Blood Group</h2>
+        <p>Understanding compatibility helps save lives faster</p>
+      </div>
+
+      <div class="bg-cards">
+        <div class="bg-card" *ngFor="let bg of bloodGroupInfo">
+          <div class="bg-badge blood-badge xl">{{ bg.group }}</div>
+          <div class="bg-info">
+            <div class="bg-row">
+              <span class="bg-label">Can Give To:</span>
+              <span class="bg-tags">
+                <span class="blood-badge outline" *ngFor="let d of bg.donate">{{ d }}</span>
+              </span>
+            </div>
+            <div class="bg-row">
+              <span class="bg-label">Can Take From:</span>
+              <span class="bg-tags">
+                <span class="blood-badge outline" *ngFor="let r of bg.receive">{{ r }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="section features">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="section-tag">Why Choose Us</div>
+        <h2>Built for Real Emergencies</h2>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let f of features">
+          <div class="feature-icon">{{ f.icon }}</div>
+          <h4>{{ f.title }}</h4>
+          <p>{{ f.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== URGENCY BANNER ===== -->
+  <section class="urgency-banner">
+    <div class="container">
+      <div class="ub-inner">
+        <div class="ub-pulse"></div>
+        <div class="ub-content">
+          <span class="ub-icon">🚨</span>
+          <div>
+            <h3>Critical Shortage Alert</h3>
+            <p>O- and AB- blood groups are critically low in several cities. Donors urgently needed.</p>
+          </div>
+        </div>
+        <a routerLink="/register" class="btn btn-primary">Donate Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DONOR CTA ===== -->
+  <section class="section donor-cta">
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-bg-decor"></div>
+        <div class="cta-content">
+          <div class="cta-icon animate-heartbeat">🩸</div>
+          <h2>Ready to Be a Hero?</h2>
+          <p>One donation can save up to 3 lives. Register as a donor today and help someone in their most critical moment.</p>
+          <div class="cta-actions">
+            <a routerLink="/register" class="btn btn-primary btn-lg">Register as Donor</a>
+            <a routerLink="/search" class="btn btn-ghost btn-lg">Search Donors</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

@@ -1,0 +1,69 @@
+# docker-compose.yml — Local Development
+version: '3.8'
+
+services:
+  # MongoDB
+  mongodb:
+    image: mongo:7.0
+    container_name: bloodconnect-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: blood_donation_db
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - bloodconnect-net
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bloodconnect-api
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/blood_donation_db?authSource=admin
+      JWT_SECRET: dev_jwt_secret_change_in_production_min32chars
+      JWT_REFRESH_SECRET: dev_refresh_secret_change_in_production_too
+      JWT_EXPIRE: 7d
+      JWT_REFRESH_EXPIRE: 30d
+      CLIENT_URL: http://localhost:4200
+      RATE_LIMIT_WINDOW: 15
+      RATE_LIMIT_MAX: 1000
+    depends_on:
+      - mongodb
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - bloodconnect-net
+    restart: unless-stopped
+
+  # Mongo Express (DB GUI)
+  mongo-express:
+    image: mongo-express:latest
+    container_name: bloodconnect-mongo-ui
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password123
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password123@mongodb:27017/
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - mongodb
+    networks:
+      - bloodconnect-net
+
+volumes:
+  mongo_data:
+
+networks:
+  bloodconnect-net:
+    driver: bridge

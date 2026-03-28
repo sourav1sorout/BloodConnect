@@ -1,0 +1,218 @@
+<!-- pages/donor-profile/donor-profile.component.html -->
+<div class="page-wrapper">
+  <!-- Loading -->
+  <div class="profile-loading" *ngIf="loading">
+    <div class="container section-sm">
+      <div class="skeleton" style="height:280px;border-radius:20px;margin-bottom:24px"></div>
+      <div class="grid grid-2 gap-4">
+        <div class="skeleton" style="height:160px;border-radius:16px"></div>
+        <div class="skeleton" style="height:160px;border-radius:16px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && donor">
+    <!-- Profile Hero -->
+    <div class="profile-hero">
+      <div class="ph-bg"></div>
+      <div class="container">
+        <div class="ph-inner">
+          <div class="ph-avatar">
+            <div class="avatar" style="width:100px;height:100px;font-size:2.5rem;border:4px solid white;box-shadow:var(--shadow-lg)">
+              <img *ngIf="donor.user?.avatar" [src]="donor.user.avatar" [alt]="donor.user?.name">
+              <span *ngIf="!donor.user?.avatar">{{ donor.user?.name?.charAt(0) }}</span>
+            </div>
+            <div class="ph-badge blood-badge xl">{{ donor.bloodGroup }}</div>
+          </div>
+
+          <div class="ph-info">
+            <h1 class="font-display">{{ donor.user?.name }}</h1>
+            <div class="ph-meta">
+              <span class="ph-meta-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ donor.address?.city }}, {{ donor.address?.state }}
+              </span>
+              <span class="ph-meta-item">{{ donor.age }} years • {{ donor.gender }}</span>
+              <span class="ph-meta-item">Donor since {{ donor.createdAt | date:'MMMM yyyy' }}</span>
+            </div>
+            <div class="ph-status">
+              <span class="status-badge" [class]="donor.isAvailable ? 'status-available' : 'status-unavailable'">
+                {{ donor.isAvailable ? '🟢 Available to Donate' : '🔴 Currently Unavailable' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="ph-actions" *ngIf="donor.isAvailable && isLoggedIn">
+            <button class="btn btn-primary btn-lg" (click)="showModal = true">
+              🩸 Request Blood
+            </button>
+          </div>
+          <div class="ph-actions" *ngIf="!isLoggedIn">
+            <a routerLink="/login" class="btn btn-primary btn-lg">Login to Request</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Content -->
+    <div class="container section-sm">
+      <div class="profile-grid">
+
+        <!-- Main Info -->
+        <div class="profile-main">
+          <!-- Bio -->
+          <div class="card mb-4" *ngIf="donor.bio">
+            <h3 class="font-display mb-3">About</h3>
+            <p>{{ donor.bio }}</p>
+          </div>
+
+          <!-- Details -->
+          <div class="card mb-4">
+            <h3 class="font-display mb-4">Donor Details</h3>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="di-icon">🩸</span>
+                <div>
+                  <span class="di-label">Blood Group</span>
+                  <span class="blood-badge lg">{{ donor.bloodGroup }}</span>
+                </div>
+              </div>
+              <div class="detail-item">
+                <span class="di-icon">🎂</span>
+                <div>
+                  <span class="di-label">Age</span>
+                  <strong>{{ donor.age }} years</strong>
+                </div>
+              </div>
+              <div class="detail-item">
+                <span class="di-icon">⚧</span>
+                <div>
+                  <span class="di-label">Gender</span>
+                  <strong>{{ donor.gender }}</strong>
+                </div>
+              </div>
+              <div class="detail-item" *ngIf="donor.weight">
+                <span class="di-icon">⚖️</span>
+                <div>
+                  <span class="di-label">Weight</span>
+                  <strong>{{ donor.weight }} kg</strong>
+                </div>
+              </div>
+              <div class="detail-item" *ngIf="donor.lastDonationDate">
+                <span class="di-icon">📅</span>
+                <div>
+                  <span class="di-label">Last Donation</span>
+                  <strong>{{ donor.lastDonationDate | date:'dd MMM yyyy' }}</strong>
+                </div>
+              </div>
+              <div class="detail-item">
+                <span class="di-icon">💪</span>
+                <div>
+                  <span class="di-label">Total Donations</span>
+                  <strong>{{ donor.totalDonations }}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compatible Blood Groups -->
+          <div class="card">
+            <h3 class="font-display mb-4">Blood Compatibility</h3>
+            <div class="compat-section">
+              <div>
+                <span class="compat-label">Can Donate To</span>
+                <div class="compat-badges">
+                  <span class="blood-badge" *ngFor="let bg of getDonateGroups()">{{ bg }}</span>
+                </div>
+              </div>
+              <div class="divider" style="margin:16px 0"></div>
+              <div>
+                <span class="compat-label">Can Receive From</span>
+                <div class="compat-badges">
+                  <span class="blood-badge outline" *ngFor="let bg of getReceiveGroups()">{{ bg }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="profile-side">
+          <!-- Stats Card -->
+          <div class="card mb-4">
+            <h4 class="font-display mb-4">Statistics</h4>
+            <div class="side-stats">
+              <div class="ss-item">
+                <strong class="font-display ss-num">{{ donor.totalDonations }}</strong>
+                <span>Donations</span>
+              </div>
+              <div class="ss-item">
+                <strong class="font-display ss-num">{{ donor.totalDonations * 3 }}</strong>
+                <span>Lives Impacted</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Donation Eligibility -->
+          <div class="card mb-4" [class]="donor.canDonate ? 'card-surface' : ''">
+            <h4 class="font-display mb-3">Eligibility</h4>
+            <div class="elig-status" [class.eligible]="donor.canDonate" [class.ineligible]="!donor.canDonate">
+              <span class="elig-icon">{{ donor.canDonate ? '✅' : '⏳' }}</span>
+              <div>
+                <strong>{{ donor.canDonate ? 'Eligible to Donate' : 'Waiting Period' }}</strong>
+                <p *ngIf="!donor.canDonate">{{ 56 - (donor.daysSinceLastDonation || 0) }} days remaining</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact CTA -->
+          <div class="card card-red" *ngIf="donor.isAvailable && isLoggedIn">
+            <div class="cta-mini">
+              <span style="font-size:2rem">🩸</span>
+              <h4 style="color:white">Need This Blood?</h4>
+              <p style="color:rgba(255,255,255,0.85);font-size:0.875rem;margin-bottom:16px">Send a request to this donor directly</p>
+              <button class="btn" style="background:white;color:var(--blood-red);width:100%" (click)="showModal = true">Send Request</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Not Found -->
+  <div class="empty-state section" *ngIf="!loading && !donor">
+    <div class="empty-icon">🔍</div>
+    <h3>Donor Not Found</h3>
+    <p>This donor profile doesn't exist or hasn't been approved yet.</p>
+    <a routerLink="/search" class="btn btn-primary mt-4">Search Donors</a>
+  </div>
+
+  <!-- Request Modal (reuse same modal) -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal($event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="font-display">Request Blood from {{ donor?.user?.name }}</h3>
+        <span class="blood-badge lg" style="margin-left:8px">{{ donor?.bloodGroup }}</span>
+        <button class="modal-close" (click)="showModal=false" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:1.2rem;color:var(--text-muted)">✕</button>
+      </div>
+      <form [formGroup]="requestForm" (ngSubmit)="submitRequest()" class="mt-4">
+        <div class="grid grid-2 gap-4">
+          <div class="form-group"><label>Patient Name *</label><input type="text" class="form-control" formControlName="patientName" /></div>
+          <div class="form-group"><label>Contact Number *</label><input type="tel" class="form-control" formControlName="requesterContact" /></div>
+          <div class="form-group"><label>Hospital Name *</label><input type="text" class="form-control" formControlName="hospitalName" /></div>
+          <div class="form-group"><label>Units Needed *</label><select class="form-control" formControlName="unitsRequired"><option *ngFor="let u of [1,2,3,4,5]" [value]="u">{{ u }}</option></select></div>
+          <div class="form-group"><label>Hospital City *</label><input type="text" class="form-control" formControlName="hospitalCity" /></div>
+          <div class="form-group"><label>Hospital State *</label><input type="text" class="form-control" formControlName="hospitalState" /></div>
+          <div class="form-group"><label>Urgency *</label><select class="form-control" formControlName="urgency"><option value="normal">Normal</option><option value="urgent">Urgent</option><option value="critical">Critical</option></select></div>
+          <div class="form-group"><label>Needed By *</label><input type="datetime-local" class="form-control" formControlName="neededBy" [min]="minDate" /></div>
+        </div>
+        <div class="form-group"><label>Message</label><textarea class="form-control" formControlName="message" rows="2"></textarea></div>
+        <div class="alert alert-danger" *ngIf="requestError"><span class="alert-icon">❌</span>{{ requestError }}</div>
+        <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+          <button type="button" class="btn btn-ghost" (click)="showModal=false">Cancel</button>
+          <button type="submit" class="btn btn-primary" [class.btn-loading]="requestLoading" [disabled]="requestLoading">{{ requestLoading ? 'Sending...' : 'Send Request' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

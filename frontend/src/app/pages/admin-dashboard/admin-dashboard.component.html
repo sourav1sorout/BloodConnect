@@ -1,0 +1,600 @@
+<!-- admin-dashboard.component.html -->
+<div class="page-wrapper">
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="as-brand">
+        <span>🩸</span>
+        <span class="font-display">Admin Panel</span>
+      </div>
+      <nav>
+        <button
+          *ngFor="let t of tabs"
+          class="as-nav-btn"
+          [class.active]="activeTab === t.id"
+          (click)="switchTab(t.id)">
+          <span>{{ t.icon }}</span>
+          <span>{{ t.label }}</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+
+      <!-- ===== OVERVIEW ===== -->
+      <div *ngIf="activeTab === 'overview'" class="animate-fadeIn">
+        <h2 class="font-display admin-title">Dashboard Overview</h2>
+
+        <!-- 9 Stat Cards -->
+        <div class="admin-stats-grid" *ngIf="stats">
+          <div class="asc red">
+            <strong class="font-display">{{ stats?.totalDonors }}</strong>
+            <span>Total Donors</span>
+          </div>
+          <div class="asc green">
+            <strong class="font-display">{{ stats?.approvedDonors }}</strong>
+            <span>Approved Donors</span>
+          </div>
+          <div class="asc orange">
+            <strong class="font-display">{{ stats?.pendingDonors }}</strong>
+            <span>Pending Approval</span>
+          </div>
+          <div class="asc blue">
+            <strong class="font-display">{{ stats?.totalUsers }}</strong>
+            <span>Total Users</span>
+          </div>
+          <div class="asc purple">
+            <strong class="font-display">{{ stats?.totalRequests }}</strong>
+            <span>Total Requests</span>
+          </div>
+          <div class="asc yellow">
+            <strong class="font-display">{{ stats?.pendingRequests }}</strong>
+            <span>Pending Requests</span>
+          </div>
+          <div class="asc green">
+            <strong class="font-display">{{ stats?.acceptedRequests }}</strong>
+            <span>Accepted Requests</span>
+          </div>
+          <div class="asc teal">
+            <strong class="font-display">{{ stats?.completedRequests }}</strong>
+            <span>Completed</span>
+          </div>
+          <div class="asc pink">
+            <strong class="font-display">{{ stats?.availableDonors }}</strong>
+            <span>Available Now</span>
+          </div>
+        </div>
+
+        <!-- Charts row -->
+        <div class="grid grid-2 gap-6 mt-6">
+          <!-- Blood Group Distribution -->
+          <div class="card">
+            <h4 class="mb-4">🩸 Blood Group Distribution</h4>
+            <div *ngIf="!bloodGroupStats.length" class="empty-state" style="padding:20px">
+              <p>No data available</p>
+            </div>
+            <div *ngFor="let b of bloodGroupStats || []" class="bg-row-stat">
+              <span class="blood-badge" style="min-width:50px;text-align:center">{{ b._id }}</span>
+              <div class="bgs-bar">
+                <div
+                  class="bgs-fill"
+                  [style.width.%]="stats?.approvedDonors ? (b.count / (stats?.approvedDonors ?? 1)) * 100 : 0">
+                </div>
+              </div>
+              <span class="bgs-count">{{ b.count }}</span>
+            </div>
+          </div>
+
+          <!-- Top Cities -->
+          <div class="card">
+            <h4 class="mb-4">🏙️ Top Cities by Donors</h4>
+            <div *ngIf="!cityStats.length" class="empty-state" style="padding:20px">
+              <p>No data available</p>
+            </div>
+            <div *ngFor="let c of (cityStats || []).slice(0,8); let i = index" class="city-row">
+              <span class="city-rank font-display">{{ i + 1 }}</span>
+              <span class="city-name">{{ c._id }}</span>
+              <span class="city-count">{{ c.count }} donors</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly Trend Chart -->
+        <div class="card mt-6">
+          <h4 class="mb-4">📈 Monthly Requests — Last 6 Months</h4>
+          <div *ngIf="!monthlyTrend.length" class="empty-state" style="padding:20px">
+            <p>No trend data available yet</p>
+          </div>
+          <div class="trend-chart" *ngIf="monthlyTrend.length">
+            <div *ngFor="let t of monthlyTrend" class="trend-row">
+              <span class="trend-label">{{ trendLabel(t) }}</span>
+              <div class="trend-bar-wrap">
+                <div class="trend-bar" [style.width.%]="trendBarWidth(t.count)">
+                  <span class="trend-count">{{ t.count }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card mt-6">
+          <div class="flex-between mb-4">
+            <h4>📊 Recent Activity (Last 7 Days)</h4>
+          </div>
+          <div class="grid grid-2 gap-4" *ngIf="stats">
+            <div class="activity-stat">
+              <span class="as-icon">👤</span>
+              <div>
+                <strong class="font-display">{{ stats?.recentRegistrations }}</strong>
+                <span>New Registrations</span>
+              </div>
+            </div>
+            <div class="activity-stat">
+              <span class="as-icon">📩</span>
+              <div>
+                <strong class="font-display">{{ stats?.recentRequests }}</strong>
+                <span>New Blood Requests</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DONORS TAB ===== -->
+      <div *ngIf="activeTab === 'donors'" class="animate-fadeIn">
+        <div class="flex-between mb-4" style="flex-wrap:wrap;gap:12px">
+          <h2 class="font-display admin-title">Manage Donors</h2>
+          <div class="flex gap-3" style="flex-wrap:wrap">
+            <!-- Search -->
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input
+                class="form-control search-input"
+                type="text"
+                placeholder="Search by name / email…"
+                [(ngModel)]="donorSearch"
+                (input)="onDonorSearch()">
+            </div>
+            <!-- Filter -->
+            <select class="form-control" style="width:180px" [(ngModel)]="donorFilter" (change)="onDonorFilter()">
+              <option value="">All Donors</option>
+              <option value="false">Pending Approval</option>
+              <option value="true">Approved</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="!donors.length">
+          <div class="empty-icon">🩸</div>
+          <h3>No Donors Found</h3>
+          <p>No donors match the current filter.</p>
+        </div>
+
+        <div class="table-container" *ngIf="donors.length">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Donor</th>
+                <th>Blood Group</th>
+                <th>Age / Gender</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Available</th>
+                <th>Donations</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of donors || []">
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="avatar" style="width:36px;height:36px;font-size:0.9rem;flex-shrink:0">
+                      {{ d.user?.name?.charAt(0) }}
+                    </div>
+                    <div>
+                      <div style="font-weight:600">{{ d.user?.name }}</div>
+                      <small class="text-muted">{{ d.user?.email }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="blood-badge">{{ d.bloodGroup }}</span></td>
+                <td>{{ d.age }} yrs · {{ d.gender }}</td>
+                <td>{{ d.address?.city }}, {{ d.address?.state }}</td>
+                <td>
+                  <span class="status-badge" [class]="d.isApproved ? 'status-accepted' : 'status-pending'">
+                    {{ d.isApproved ? 'Approved' : 'Pending' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="status-badge" [class]="d.isAvailable ? 'status-available' : 'status-unavailable'">
+                    {{ d.isAvailable ? 'Yes' : 'No' }}
+                  </span>
+                </td>
+                <td>{{ d.totalDonations }}</td>
+                <td>
+                  <div class="flex gap-2">
+                    <button
+                      *ngIf="!d.isApproved"
+                      class="btn btn-success btn-sm"
+                      (click)="openApproveModal(d, true)">
+                      ✓ Approve
+                    </button>
+                    <button
+                      *ngIf="d.isApproved"
+                      class="btn btn-danger btn-sm"
+                      (click)="openApproveModal(d, false)">
+                      Revoke
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Donors Pagination -->
+        <div class="pagination-row" *ngIf="donorMeta && donorMeta.totalPages > 1">
+          <button class="btn btn-outline btn-sm" [disabled]="donorPage === 1" (click)="donorPrev()">← Prev</button>
+          <span class="page-info">Page {{ donorPage }} of {{ donorMeta.totalPages }} &nbsp;·&nbsp; {{ donorMeta.total }} total</span>
+          <button class="btn btn-outline btn-sm" [disabled]="!donorMeta.hasNextPage" (click)="donorNext()">Next →</button>
+        </div>
+      </div>
+
+      <!-- ===== USERS TAB ===== -->
+      <div *ngIf="activeTab === 'users'" class="animate-fadeIn">
+        <div class="flex-between mb-4" style="flex-wrap:wrap;gap:12px">
+          <h2 class="font-display admin-title">Manage Users</h2>
+          <!-- Search -->
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input
+              class="form-control search-input"
+              type="text"
+              placeholder="Search by name / email…"
+              [(ngModel)]="userSearch"
+              (input)="onUserSearch()">
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="!users.length">
+          <div class="empty-icon">👥</div>
+          <h3>No Users Found</h3>
+        </div>
+
+        <div class="table-container" *ngIf="users.length">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Role</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Last Login</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let u of users || []">
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="avatar" style="width:36px;height:36px;font-size:0.9rem;flex-shrink:0">
+                      {{ u.name?.charAt(0) }}
+                    </div>
+                    <div>
+                      <div style="font-weight:600">{{ u.name }}</div>
+                      <small class="text-muted">{{ u.email }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="role-badge role-{{ u.role }}">{{ u.role }}</span></td>
+                <td>{{ u.phone || '—' }}</td>
+                <td>
+                  <span class="status-badge" [class]="u.isActive ? 'status-available' : 'status-unavailable'">
+                    {{ u.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td>{{ u.lastLogin ? (u.lastLogin | date:'dd MMM yyyy') : '—' }}</td>
+                <td>{{ u.createdAt | date:'dd MMM yyyy' }}</td>
+                <td>
+                  <div class="flex gap-2">
+                    <button
+                      class="btn btn-sm"
+                      [class]="u.isActive ? 'btn-warning' : 'btn-success'"
+                      (click)="toggleUser(u._id)">
+                      {{ u.isActive ? '🔒 Suspend' : '🔓 Activate' }}
+                    </button>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      title="Delete user"
+                      (click)="openDeleteModal(u)">
+                      🗑
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Users Pagination -->
+        <div class="pagination-row" *ngIf="userMeta && userMeta.totalPages > 1">
+          <button class="btn btn-outline btn-sm" [disabled]="userPage === 1" (click)="userPrev()">← Prev</button>
+          <span class="page-info">Page {{ userPage }} of {{ userMeta.totalPages }} &nbsp;·&nbsp; {{ userMeta.total }} total</span>
+          <button class="btn btn-outline btn-sm" [disabled]="!userMeta.hasNextPage" (click)="userNext()">Next →</button>
+        </div>
+      </div>
+
+      <!-- ===== REQUESTS TAB ===== -->
+      <div *ngIf="activeTab === 'requests'" class="animate-fadeIn">
+        <div class="flex-between mb-4" style="flex-wrap:wrap;gap:12px">
+          <h2 class="font-display admin-title">All Blood Requests</h2>
+          <div class="flex gap-3">
+            <select class="form-control" style="width:140px" [(ngModel)]="requestStatusFilter" (change)="onReqFilter()">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="accepted">Accepted</option>
+              <option value="rejected">Rejected</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <select class="form-control" style="width:120px" [(ngModel)]="requestUrgencyFilter" (change)="onReqFilter()">
+              <option value="">All Urgency</option>
+              <option value="critical">Critical</option>
+              <option value="urgent">Urgent</option>
+              <option value="normal">Normal</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="!requests.length">
+          <div class="empty-icon">📩</div>
+          <h3>No Requests Found</h3>
+          <p>No blood requests match the current filters.</p>
+        </div>
+
+        <div class="table-container" *ngIf="requests.length">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Requester</th>
+                <th>Donor</th>
+                <th>Blood</th>
+                <th>Hospital</th>
+                <th>Units</th>
+                <th>Urgency</th>
+                <th>Status</th>
+                <th>Needed By</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let r of requests || []">
+                <td>
+                  <div>
+                    <div style="font-weight:600">{{ r.requester?.name }}</div>
+                    <small class="text-muted">{{ r.requester?.phone }}</small>
+                  </div>
+                </td>
+                <td>{{ r.donor?.user?.name || '—' }}</td>
+                <td><span class="blood-badge">{{ r.bloodGroup }}</span></td>
+                <td>
+                  <div>
+                    <div>{{ r.hospital?.name }}</div>
+                    <small class="text-muted">{{ r.hospital?.city }}, {{ r.hospital?.state }}</small>
+                  </div>
+                </td>
+                <td>{{ r.unitsRequired }}</td>
+                <td><span class="urgency-badge urgency-{{ r.urgency }}">{{ r.urgency }}</span></td>
+                <td><span class="status-badge status-{{ r.status }}">{{ r.status }}</span></td>
+                <td>{{ r.neededBy | date:'dd MMM yy' }}</td>
+                <td>{{ r.createdAt | date:'dd MMM' }}</td>
+                <td>
+                  <button
+                    *ngIf="r.status !== 'completed' && r.status !== 'cancelled'"
+                    class="btn btn-danger btn-sm"
+                    (click)="cancelRequest(r._id)">
+                    ✕ Cancel
+                  </button>
+                  <span *ngIf="r.status === 'completed' || r.status === 'cancelled'" class="text-muted" style="font-size:0.8rem">—</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Requests Pagination -->
+        <div class="pagination-row" *ngIf="requestMeta && requestMeta.totalPages > 1">
+          <button class="btn btn-outline btn-sm" [disabled]="requestPage === 1" (click)="requestPrev()">← Prev</button>
+          <span class="page-info">Page {{ requestPage }} of {{ requestMeta.totalPages }} &nbsp;·&nbsp; {{ requestMeta.total }} total</span>
+          <button class="btn btn-outline btn-sm" [disabled]="!requestMeta.hasNextPage" (click)="requestNext()">Next →</button>
+        </div>
+      </div>
+
+      <!-- ===== AUDIT LOG TAB ===== -->
+      <div *ngIf="activeTab === 'audit'" class="animate-fadeIn">
+        <div class="flex-between mb-6">
+          <h2 class="font-display admin-title">Audit Log</h2>
+          <button class="btn btn-outline btn-sm" (click)="loadAuditLogs()">🔄 Refresh</button>
+        </div>
+
+        <div class="empty-state" *ngIf="!auditLogs.length">
+          <div class="empty-icon">📋</div>
+          <h3>No Audit Logs Yet</h3>
+          <p>Admin actions will appear here.</p>
+        </div>
+
+        <div class="table-container" *ngIf="auditLogs.length">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Admin</th>
+                <th>Action</th>
+                <th>Target</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of auditLogs">
+                <td style="white-space:nowrap;font-size:0.8125rem;color:var(--text-muted)">
+                  {{ log.createdAt | date:'dd MMM yy, HH:mm' }}
+                </td>
+                <td>
+                  <div style="font-weight:600;font-size:0.875rem">{{ log.admin?.name }}</div>
+                  <small class="text-muted">{{ log.admin?.email }}</small>
+                </td>
+                <td>
+                  <span class="audit-badge" [class]="auditActionClass(log.action)">
+                    {{ log.action.replace('_', ' ') }}
+                  </span>
+                </td>
+                <td style="font-size:0.875rem">{{ log.targetType }}</td>
+                <td style="font-size:0.8125rem;color:var(--text-secondary);max-width:260px">{{ log.details }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Audit Pagination -->
+        <div class="pagination-row" *ngIf="auditMeta && auditMeta.totalPages > 1">
+          <button class="btn btn-outline btn-sm" [disabled]="auditPage === 1" (click)="auditPrev()">← Prev</button>
+          <span class="page-info">Page {{ auditPage }} of {{ auditMeta.totalPages }}</span>
+          <button class="btn btn-outline btn-sm" [disabled]="!auditMeta.hasNextPage" (click)="auditNext()">Next →</button>
+        </div>
+      </div>
+
+      <!-- ===== TOOLS TAB ===== -->
+      <div *ngIf="activeTab === 'tools'" class="animate-fadeIn">
+        <h2 class="font-display admin-title">Admin Tools</h2>
+
+        <div class="grid grid-2 gap-6">
+
+          <!-- Export CSV -->
+          <div class="card tools-card">
+            <div class="tools-card-icon">📥</div>
+            <h4>Export Data as CSV</h4>
+            <p class="text-muted" style="margin:8px 0 20px;font-size:0.9rem">Download a full snapshot of users or blood requests for offline analysis.</p>
+            <div class="flex gap-3">
+              <button class="btn btn-outline" (click)="exportCSV('users')">
+                👥 Export Users
+              </button>
+              <button class="btn btn-outline" (click)="exportCSV('requests')">
+                📩 Export Requests
+              </button>
+            </div>
+          </div>
+
+          <!-- Bulk Email -->
+          <div class="card tools-card">
+            <div class="tools-card-icon">📧</div>
+            <h4>Bulk Email Donors</h4>
+            <p class="text-muted" style="margin:8px 0 20px;font-size:0.9rem">Send a targeted email to all approved donors matching a blood group or city.</p>
+            <button class="btn btn-primary" (click)="bulkEmailModal.show = true">
+              Compose Email
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ===== DELETE MODAL ===== -->
+<div class="modal-overlay" *ngIf="deleteModal.show" (click)="deleteModal.show = false">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-danger-icon">🗑️</div>
+    <h3 class="font-display" style="font-size:1.6rem;margin:12px 0 8px">Delete User</h3>
+    <p style="color:var(--text-secondary);margin-bottom:24px">
+      Are you sure you want to permanently delete <strong>{{ deleteModal.name }}</strong>?
+      This will also remove their donor profile. This action <strong>cannot</strong> be undone.
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="deleteModal.show = false">Cancel</button>
+      <button class="btn btn-danger" (click)="confirmDelete()">🗑 Delete Permanently</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APPROVE / REJECT MODAL ===== -->
+<div class="modal-overlay" *ngIf="approveModal.show" (click)="approveModal.show = false">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-danger-icon">{{ approveModal.approve ? '✅' : '❌' }}</div>
+    <h3 class="font-display" style="font-size:1.6rem;margin:12px 0 8px">
+      {{ approveModal.approve ? 'Approve Donor' : 'Reject Donor' }}
+    </h3>
+    <p style="color:var(--text-secondary);margin-bottom:16px">
+      {{ approveModal.approve
+        ? 'Approving ' + approveModal.donorName + ' will list them in search results and allow them to receive requests.'
+        : 'Rejecting ' + approveModal.donorName + ' will remove them from search results. You can optionally provide a reason.' }}
+    </p>
+
+    <!-- Rejection reason (only when rejecting) -->
+    <div *ngIf="!approveModal.approve" class="form-group">
+      <label>Rejection Reason (optional)</label>
+      <textarea
+        class="form-control"
+        rows="3"
+        placeholder="e.g. Incomplete medical details, age restriction…"
+        [(ngModel)]="approveModal.reason">
+      </textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="approveModal.show = false">Cancel</button>
+      <button
+        class="btn"
+        [class]="approveModal.approve ? 'btn-success' : 'btn-danger'"
+        (click)="confirmApprove()">
+        {{ approveModal.approve ? '✓ Confirm Approve' : '✕ Confirm Reject' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BULK EMAIL MODAL ===== -->
+<div class="modal-overlay" *ngIf="bulkEmailModal.show" (click)="bulkEmailModal.show = false">
+  <div class="modal-box" style="max-width:640px" (click)="$event.stopPropagation()">
+    <h3 class="font-display" style="font-size:1.6rem;margin-bottom:20px">📧 Compose Bulk Email</h3>
+
+    <div class="grid grid-2 gap-4">
+      <div class="form-group">
+        <label>Blood Group (optional)</label>
+        <select class="form-control" [(ngModel)]="bulkEmailForm.bloodGroup">
+          <option value="">All Blood Groups</option>
+          <option value="A+">A+</option><option value="A-">A-</option>
+          <option value="B+">B+</option><option value="B-">B-</option>
+          <option value="AB+">AB+</option><option value="AB-">AB-</option>
+          <option value="O+">O+</option><option value="O-">O-</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>City (optional)</label>
+        <input class="form-control" type="text" placeholder="e.g. Mumbai" [(ngModel)]="bulkEmailForm.city">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Subject <span style="color:var(--danger)">*</span></label>
+      <input class="form-control" type="text" placeholder="Email subject…" [(ngModel)]="bulkEmailForm.subject">
+    </div>
+
+    <div class="form-group">
+      <label>Message <span style="color:var(--danger)">*</span></label>
+      <textarea class="form-control" rows="5" placeholder="Type your message here…" [(ngModel)]="bulkEmailForm.message"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="bulkEmailModal.show = false">Cancel</button>
+      <button class="btn btn-primary" [class.btn-loading]="bulkEmailLoading" (click)="sendBulkEmail()">
+        {{ bulkEmailLoading ? '' : '📧 Send Email' }}
+      </button>
+    </div>
+  </div>
+</div>

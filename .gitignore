@@ -1,0 +1,26 @@
+# Node & NPM
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+.env.production
+
+# Frontend builds
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+
+# Backend
+backend/logs/
+
+# Python Data Analytics
+data-analytics/venv/
+data-analytics/__pycache__/
+data-analytics/*.pyc
+data-analytics/.pytest_cache/
+
+# OS specific files
+.DS_Store
+Thumbs.db
