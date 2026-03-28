@@ -22,11 +22,12 @@ const seedData = async () => {
     console.log('✅ Cleared existing data');
 
     // Create Admin
-    const adminExists = await User.findOne({ email: process.env.ADMIN_EMAIL });
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@blooddonation.com';
+    const adminExists = await User.findOne({ email: adminEmail });
     if (!adminExists) {
       await User.create({
         name: process.env.ADMIN_NAME || 'Super Admin',
-        email: process.env.ADMIN_EMAIL || 'admin@blooddonation.com',
+        email: adminEmail,
         password: process.env.ADMIN_PASSWORD || 'Admin@12345',
         role: 'admin',
         isActive: true,
