@@ -17,7 +17,7 @@
           <div class="avail-label">Availability Status</div>
           <button class="avail-toggle" [class.available]="donor.isAvailable" (click)="toggleAvailability()" [disabled]="toggleLoading">
             <span class="avail-dot"></span>
-            {{ donor.isAvailable . 'Available' : 'Unavailable' }}
+            {{ donor.isAvailable ? 'Available' : 'Unavailable' }}
           </button>
         </div>
 
@@ -255,7 +255,7 @@
             <div class="alert alert-success" *ngIf="profileSuccess">✅ Profile updated successfully!</div>
 
             <button type="submit" class="btn btn-primary" [class.btn-loading]="profileLoading" [disabled]="profileLoading">
-              {{ profileLoading . 'Saving...' : 'Save Changes' }}
+              {{ profileLoading ? 'Saving...' : 'Save Changes' }}
             </button>
           </form>
         </div>

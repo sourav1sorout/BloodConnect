@@ -163,7 +163,7 @@
             <div class="elig-status" [class.eligible]="donor.canDonate" [class.ineligible]="!donor.canDonate">
               <span class="elig-icon">{{ donor.canDonate ? '✅' : '⏳' }}</span>
               <div>
-                <strong>{{ donor.canDonate . 'Eligible to Donate' : 'Waiting Period' }}</strong>
+                <strong>{{ donor.canDonate ? 'Eligible to Donate' : 'Waiting Period' }}</strong>
                 <p *ngIf="!donor.canDonate">{{ 56 - (donor.daysSinceLastDonation || 0) }} days remaining</p>
               </div>
             </div>
@@ -233,7 +233,7 @@
           style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
           <button type="button" class="btn btn-ghost" (click)="showModal=false">Cancel</button>
           <button type="submit" class="btn btn-primary" [class.btn-loading]="requestLoading"
-            [disabled]="requestLoading">{{ requestLoading . 'Sending...' : 'Send Request' }}</button>
+            [disabled]="requestLoading">{{ requestLoading ? 'Sending...' : 'Send Request' }}</button>
         </div>
       </form>
     </div>
