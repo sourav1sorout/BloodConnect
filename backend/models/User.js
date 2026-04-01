@@ -27,7 +27,10 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
+      required: [true, 'Phone number is required'],
       trim: true,
+      minlength: [10, 'Phone number must be exactly 10 digits'],
+      maxlength: [10, 'Phone number must be exactly 10 digits'],
       match: [/^[0-9]{10}$/, 'Please enter a valid 10-digit phone number'],
     },
     role: {

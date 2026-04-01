@@ -37,6 +37,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
+app.set('trust proxy', 1);
+
 // Rate Limiting
 const globalLimiter = rateLimit({
   windowMs: (parseInt(process.env.RATE_LIMIT_WINDOW) || 15) * 60 * 1000,
@@ -48,7 +50,7 @@ const globalLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // 10 login attempts per window
+  max: 25, // Increased from 10 to 25 login/register attempts per window
   message: { success: false, message: 'Too many auth attempts. Please try again in 15 minutes.' },
 });
 

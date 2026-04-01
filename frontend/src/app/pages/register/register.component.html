@@ -58,14 +58,17 @@
           </div>
 
           <div class="form-group">
-            <label>Phone Number</label>
+            <label>Phone Number *</label>
             <input
               type="tel"
               class="form-control"
               [class.error]="isInvalid('phone')"
               formControlName="phone"
               placeholder="10-digit number"
+              maxlength="10"
+              minlength="10"
               autocomplete="tel"
+              onkeypress="return event.charCode >= 48 && event.charCode <= 57"
             />
             <span class="error-msg" *ngIf="isInvalid('phone')">⚠ Enter valid 10-digit number</span>
           </div>
