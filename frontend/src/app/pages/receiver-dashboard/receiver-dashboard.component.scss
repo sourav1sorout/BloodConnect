@@ -7,103 +7,112 @@
 
 .stat-card {
   background: white;
-  padding: 1.25rem;
-  border-radius: 1.25rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 1rem;
-  transition: all var(--transition-fast);
+  gap: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
 
   &:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
+    border-color: var(--blood-pale);
   }
 
   .sc-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 1.4rem;
 
-    &.blue { background: #eff6ff; color: #3b82f6; }
-    &.orange { background: #fff7ed; color: #f97316; }
-    &.emerald { background: #ecfdf5; color: #10b981; }
-    &.rose { background: #fff1f2; color: #f43f5e; }
+    &.blue { background: #e0f2fe; color: #0369a1; }
+    &.orange { background: #ffedd5; color: #c2410c; }
+    &.emerald { background: #dcfce7; color: #15803d; }
+    &.rose { background: #ffe4e6; color: #be123c; }
   }
 
   .sc-info {
-    strong { display: block; font-size: 1.25rem; font-weight: 800; line-height: 1.1; color: var(--text-primary); }
-    span { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+    strong { display: block; font-size: 1.5rem; font-weight: 800; line-height: 1.1; color: var(--text-primary); font-family: var(--font-display); }
+    span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
   }
 }
 
-.request-grid-card {
-  border-color: rgba(0,0,0,0.04);
-  
-  .urgency-label {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 8px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 3px 8px;
-    border-radius: 99px;
-    color: white;
-    z-index: 10;
-    pointer-events: none;
+// Donors Grid Consistency
+.donors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
 
-    &.urg-critical { background: var(--blood-red); box-shadow: 0 4px 12px rgba(193, 18, 31, 0.3); }
-    &.urg-urgent { background: #f97316; }
-    &.urg-normal { background: #64748b; }
-  }
+.donor-card {
+  background: white;
+  padding: var(--sp-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-slow);
+  cursor: default;
 
-  .avatar.md { width: 36px; height: 36px; font-size: 0.9rem; }
-  
-  .blood-pill {
-    font-size: 10px;
-    font-weight: 800;
-    padding: 3px 8px;
-    border-radius: 8px;
-    color: var(--blood-red);
-  }
-
-  .msg-box {
-    border: 1px solid rgba(0,0,0,0.02);
+  &.card-hover:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-6px);
+    border-color: var(--blood-pale);
   }
 }
 
-.status-indicator {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  
-  &.st-pending { background: #f59e0b; }
-  &.st-accepted { background: #10b981; }
-  &.st-completed { background: #6366f1; }
-  &.st-rejected, &.st-cancelled { background: #94a3b8; }
-}
-
-.btn-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
+.dc-top {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
+  justify-content: space-between;
+  align-items: flex-start;
 
-  &.danger { background: #fef2f2; color: #ef4444; border: 1px solid #fee2e2; }
-  &:hover { transform: scale(1.05); }
-  &.sm { width: 28px; height: 28px; font-size: 0.75rem; }
+  .avatar {
+    border: 3px solid var(--border);
+    background: linear-gradient(135deg, var(--blood-red), var(--blood-dark));
+  }
+  
+  .shadow-glow {
+     box-shadow: 0 4px 20px rgba(193, 18, 31, 0.4);
+  }
+}
+
+.dc-body {
+  .dc-name {
+    font-size: 1.35rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+  }
+
+  .dc-location {
+    color: var(--text-muted);
+    font-weight: 500;
+    svg { color: var(--blood-red); opacity: 0.7; }
+  }
+}
+
+.dc-actions {
+  padding-top: 1.25rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+// Meta Alignment
+.meta-item {
+  label { opacity: 0.6; }
+  span { font-size: 0.85rem; line-height: 1.1; }
+}
+
+// Custom Urgency Styling
+.status-badge {
+  &.urgency-critical { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; }
+  &.urgency-urgent { background: #ffedd5; color: #f97316; border: 1px solid #fed7aa; }
+  &.urgency-normal { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
 }
 
 .flex-between {
@@ -112,7 +121,7 @@
   justify-content: space-between;
 }
 
-@media (max-width: 640px) {
-  .flex-between { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+@media (max-width: 768px) {
   .grid-stats { grid-template-columns: 1fr 1fr; }
+  .donors-grid { grid-template-columns: 1fr; }
 }

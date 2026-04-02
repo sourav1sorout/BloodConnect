@@ -78,85 +78,77 @@
         <a routerLink="/search" class="btn btn-primary mt-8 px-10">Search Donors</a>
       </div>
 
-      <!-- Grid of Request Cards (3 Cols on XL) -->
+      <!-- Grid of Request Cards (Donor-Style Grid) -->
       <div *ngIf="!loading && requests.length > 0" 
-           class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+           class="donors-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
         
         <div *ngFor="let request of filteredRequests" 
-             class="request-grid-card bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden group">
+             class="donor-card card card-hover relative overflow-hidden group">
           
-          <!-- Urgency Label (Modern) -->
-          <div class="urgency-label" [ngClass]="'urg-' + request.urgency">
-             {{ request.urgency }}
-          </div>
-
-          <!-- Card Header (Donor Info) -->
-          <div class="p-5 border-b border-slate-50 bg-slate-50/50">
-            <div class="flex items-center gap-3">
-              <div class="avatar md ring-4 ring-white shadow-inner">
+          <!-- Card Top (Avatar + Blood Badge) -->
+          <div class="dc-top flex justify-between items-start mb-4">
+             <div class="avatar xl shadow-md border-4 border-white">
                 <img *ngIf="request.donor.user.avatar" [src]="request.donor.user.avatar" [alt]="request.donor.user.name">
                 <span *ngIf="!request.donor.user.avatar">{{ request.donor.user.name.charAt(0) }}</span>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h4 class="font-bold text-slate-900 truncate">
-                  {{ request.donor.user.name | titlecase }}
-                </h4>
-                <div class="flex items-center gap-2 mt-0.5">
-                   <span class="status-indicator" [ngClass]="'st-' + request.status"></span>
-                   <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ request.status }}</span>
-                </div>
-              </div>
-              <div class="blood-pill bg-white shadow-sm border border-slate-100">
-                {{ request.bloodGroup }}
-              </div>
-            </div>
+             </div>
+             <div class="dc-badge">
+                <span class="blood-badge lg shadow-glow">{{ request.bloodGroup }}</span>
+             </div>
           </div>
 
-          <!-- Card Specifics (Compact 2-grid) -->
-          <div class="p-5">
-            <div class="grid grid-cols-2 gap-4 mb-5">
-              <div>
-                <label class="block text-[9px] uppercase font-bold text-slate-400 mb-1">Patient</label>
-                <p class="text-[13px] font-bold text-slate-800 truncate">{{ request.patientName }}</p>
-              </div>
-              <div class="text-right">
-                <label class="block text-[9px] uppercase font-bold text-slate-400 mb-1">Quantity</label>
-                <p class="text-[13px] font-bold text-blood-red">{{ request.unitsRequired }} Unit{{ request.unitsRequired > 1 ? 's' : '' }}</p>
-              </div>
-              <div class="col-span-2">
-                <label class="block text-[9px] uppercase font-bold text-slate-400 mb-1">Clinic / Hospital</label>
-                <p class="text-[12px] font-bold text-slate-600 line-clamp-1">
-                  🏥 {{ request.hospital.name }}
-                </p>
-              </div>
-            </div>
+          <!-- Card Body (Details) -->
+          <div class="dc-body mb-4">
+             <h4 class="dc-name mb-1">{{ request.donor.user.name | titlecase }}</h4>
+             <div class="dc-location flex items-center gap-1.5 text-sm mb-3">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+                {{ request.hospital.city }}, {{ request.hospital.name }}
+             </div>
 
-            <!-- Messages Toggle-able or Inline (Fixed Height for Alignment) -->
-            <div class="msg-box min-h-[60px] bg-indigo-50/30 p-3 rounded-2xl mb-4" *ngIf="request.message || request.responseMessage">
-               <div *ngIf="request.message">
-                 <p class="text-[11px] text-indigo-700 italic leading-snug">"{{ request.message | truncate:60 }}"</p>
-               </div>
-               <div *ngIf="request.responseMessage" class="mt-2 pt-2 border-t border-indigo-100/50">
-                 <p class="text-[11px] text-emerald-800 font-medium">"{{ request.responseMessage | truncate:60 }}"</p>
-               </div>
-            </div>
+             <!-- Grid Info -->
+             <div class="dc-meta grid grid-cols-2 gap-y-3 gap-x-2 text-xs mb-4">
+                <div class="meta-item">
+                   <label class="block uppercase font-bold opacity-40 text-[9px] mb-0.5">Patient</label>
+                   <span class="font-bold text-slate-700 truncate block">{{ request.patientName }}</span>
+                </div>
+                <div class="meta-item text-right">
+                   <label class="block uppercase font-bold opacity-40 text-[9px] mb-0.5">Quantity</label>
+                   <span class="font-black text-blood-red">{{ request.unitsRequired }} Units</span>
+                </div>
+                <div class="meta-item">
+                   <label class="block uppercase font-bold opacity-40 text-[9px] mb-0.5">Urgency</label>
+                   <span class="status-badge py-0 px-2 text-[10px]" [ngClass]="'urgency-' + request.urgency">
+                      {{ request.urgency }}
+                   </span>
+                </div>
+                <div class="meta-item text-right">
+                   <label class="block uppercase font-bold opacity-40 text-[9px] mb-0.5">Needed By</label>
+                   <span class="font-medium text-slate-500">{{ request.neededBy | date:'MMM d' }}</span>
+                </div>
+             </div>
 
-            <!-- Card Actions -->
-            <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">{{ request.createdAt | date:'MMM d, HH:mm' }}</span>
-              <div class="flex gap-2">
-                <button *ngIf="request.status === 'pending'" (click)="cancelRequest(request._id)" 
-                        class="btn-icon danger sm" title="Cancel Request">🚫</button>
-                
-                <button *ngIf="request.status === 'accepted'" (click)="completeRequest(request._id)" 
-                        class="btn btn-success btn-xs px-3">Received</button>
+             <!-- Status Indicator -->
+             <div class="dc-status flex items-center justify-between pt-3 border-t border-slate-50">
+                <span class="status-badge" [ngClass]="'status-' + request.status">{{ request.status | titlecase }}</span>
+                <span class="text-[10px] text-slate-400 font-bold uppercase">{{ request.createdAt | date:'MMM d' }}</span>
+             </div>
+          </div>
 
-                <a [routerLink]="['/donor', request.donor._id]" class="btn btn-outline btn-xs px-4 rounded-xl">View</a>
-              </div>
-            </div>
+          <!-- Card Actions -->
+          <div class="dc-actions flex gap-2 pt-4 border-t border-slate-50">
+             <a [routerLink]="['/donor', request.donor._id]" class="btn btn-outline btn-sm flex-1">View Donor</a>
+             
+             <!-- Contextual Primary Actions -->
+             <button *ngIf="request.status === 'pending'" (click)="cancelRequest(request._id)" 
+                     class="btn btn-danger btn-sm px-4" title="Cancel">✕</button>
+             
+             <button *ngIf="request.status === 'accepted'" (click)="completeRequest(request._id)" 
+                     class="btn btn-success btn-sm flex-1">I Received Blood</button>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>
