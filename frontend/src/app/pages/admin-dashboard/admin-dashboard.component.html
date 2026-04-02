@@ -394,13 +394,27 @@
                 <td>{{ r.neededBy | date:'dd MMM yy' }}</td>
                 <td>{{ r.createdAt | date:'dd MMM' }}</td>
                 <td>
+                  <div class="flex gap-2" *ngIf="r.status === 'pending'">
+                    <button
+                      class="btn btn-success btn-sm"
+                      (click)="respondToRequest(r._id, 'accepted')">
+                      ✓ Approve
+                    </button>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      (click)="respondToRequest(r._id, 'rejected')">
+                      ✕ Reject
+                    </button>
+                  </div>
                   <button
-                    *ngIf="r.status !== 'completed' && r.status !== 'cancelled'"
-                    class="btn btn-danger btn-sm"
+                    *ngIf="r.status === 'accepted' || r.status === 'pending'"
+                    class="btn btn-ghost btn-sm text-muted"
                     (click)="cancelRequest(r._id)">
-                    ✕ Cancel
+                    Cancel
                   </button>
-                  <span *ngIf="r.status === 'completed' || r.status === 'cancelled'" class="text-muted" style="font-size:0.8rem">—</span>
+                  <span *ngIf="r.status === 'completed' || r.status === 'cancelled' || r.status === 'rejected'" class="text-muted" style="font-size:0.8rem">
+                    {{ r.status === 'rejected' ? 'Rejected' : '—' }}
+                  </span>
                 </td>
               </tr>
             </tbody>

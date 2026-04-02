@@ -17,7 +17,7 @@ import { ToastService, Toast } from '../../services/toast.service';
           <div class="toast-title">{{ toast.title }}</div>
           <div class="toast-message" *ngIf="toast.message">{{ toast.message }}</div>
         </div>
-        <button class="toast-close">✕</button>
+        <button class="toast-close" (click)="$event.stopPropagation(); toastService.dismiss(toast.id)">✕</button>
       </div>
     </div>
   `,

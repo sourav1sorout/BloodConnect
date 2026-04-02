@@ -27,6 +27,7 @@ router.patch('/donors/:id/approve',               validateObjectId('id'), approv
 // Blood Requests
 router.get('/requests',                           getAllRequests);
 router.patch('/requests/:id/cancel',              validateObjectId('id'), cancelRequest);
+router.patch('/requests/:id/respond',             validateObjectId('id'), respondToRequest);
 
 // Export
 router.get('/export/users',                       exportUsers);

@@ -285,6 +285,59 @@ const cancelRequest = asyncHandler(async (req, res) => {
 });
 
 /**
+ * @desc    Admin respond to a blood request (force approve/reject)
+ * @route   PATCH /api/admin/requests/:id/respond
+ * @access  Private (Admin)
+ */
+const respondToRequest = asyncHandler(async (req, res) => {
+  const { action, responseMessage } = req.body;
+
+  if (!['accepted', 'rejected'].includes(action)) {
+    throw new AppError('Action must be accepted or rejected.', 400);
+  }
+
+  const request = await BloodRequest.findById(req.params.id)
+    .populate('requester', 'name email')
+    .populate({ path: 'donor', populate: { path: 'user', select: 'name email' } });
+
+  if (!request) throw new AppError('Blood request not found.', 404);
+  if (request.status !== 'pending') {
+    throw new AppError(`This request is already ${request.status}.`, 0);
+  }
+
+  request.status = action;
+  request.responseMessage = responseMessage || `Action taken by administrator.`;
+  request.respondedAt = Date.now();
+  await request.save();
+
+  // If accepted, increment donation count for the target donor
+  if (action === 'accepted') {
+    await Donor.findByIdAndUpdate(request.donor._id, { $inc: { totalDonations: 1 }, lastDonationDate: Date.now() });
+  }
+
+  // Notify requester via email
+  const { sendRequestStatusEmail } = require('../utils/emailUtils');
+  sendRequestStatusEmail(
+    request.requester.email,
+    request.requester.name,
+    `Administrator (on behalf of ${request.donor.user?.name || 'Donor'})`,
+    action,
+    request.bloodGroup,
+    request.responseMessage
+  ).catch((err) => console.error('Email error:', err.message));
+
+  await logAdminAction(
+    req.user._id,
+    action === 'accepted' ? 'APPROVE_REQUEST_ADMIN' : 'REJECT_REQUEST_ADMIN',
+    'BloodRequest',
+    request._id,
+    `Admin ${action} request for ${request.bloodGroup} by ${request.requester?.name}`
+  );
+
+  successResponse(res, 200, `Request ${action} by administrator`, { request });
+});
+
+/**
  * @desc    Export all users as CSV
  * @route   GET /api/admin/export/users
  * @access  Private (Admin)

@@ -41,6 +41,12 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'my-requests',
+    loadComponent: () =>
+      import('./pages/receiver-dashboard/receiver-dashboard.component').then((m) => m.ReceiverDashboardComponent),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'admin',
     loadComponent: () =>
       import('./pages/admin-dashboard/admin-dashboard.component').then((m) => m.AdminDashboardComponent),

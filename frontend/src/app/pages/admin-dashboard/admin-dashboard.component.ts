@@ -232,6 +232,20 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
+  respondToRequest(id: string, action: 'accepted' | 'rejected') {
+    const msg = action === 'accepted' ? 'Approve this request?' : 'Reject this request?';
+    if (!confirm(msg)) return;
+
+    this.adminService.respondToRequest(id, action).subscribe({
+      next: () => {
+        this.toast.success(`Request ${action === 'accepted' ? 'Approved' : 'Rejected'}`);
+        this.loadRequests();
+        this.loadStats();
+      },
+      error: (e) => this.toast.error('Failed', e.error?.message),
+    });
+  }
+
   // ── Export CSV ─────────────────────────────────────────────────────────────
   exportCSV(type: 'users' | 'requests') {
     const obs$ = type === 'users' ? this.adminService.exportUsers() : this.adminService.exportRequests();

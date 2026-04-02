@@ -58,6 +58,10 @@ export class AdminService {
     return this.http.patch<ApiResponse>(`${this.apiUrl}/requests/${id}/cancel`, {});
   }
 
+  respondToRequest(id: string, action: 'accepted' | 'rejected', responseMessage?: string): Observable<ApiResponse> {
+    return this.http.patch<ApiResponse>(`${this.apiUrl}/requests/${id}/respond`, { action, responseMessage: responseMessage || '' });
+  }
+
   // ── Export ─────────────────────────────────────────────────────────────────
   exportUsers(): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/export/users`, { responseType: 'blob' });

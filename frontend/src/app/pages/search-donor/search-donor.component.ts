@@ -122,6 +122,14 @@ export class SearchDonorComponent implements OnInit {
 
   openRequest(donor: Donor) {
     if (!this.isLoggedIn) { this.router.navigate(['/login']); return; }
+    
+    // Role Check: If user is a donor, show a small confirmation (Issue 2)
+    const currentUser = this.authService.currentUser;
+    if (currentUser?.role === 'donor') {
+      const confirmRequest = confirm('You are currently logged in as a Donor. Are you sure you want to send a blood request? (Donor profiles are primarily for donating)');
+      if (!confirmRequest) return;
+    }
+
     this.selectedDonor = donor;
     this.requestError = '';
     this.requestForm.reset({ unitsRequired: 1, urgency: 'normal' });

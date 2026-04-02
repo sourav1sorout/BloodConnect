@@ -51,19 +51,21 @@
 
 .avail-toggle {
   width: 100%;
-  padding: 10px 16px;
+  padding: 14px 20px;
   border-radius: var(--radius-full);
   border: 2px solid var(--border);
   background: var(--surface);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 12px;
   font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 1rem;
   transition: all var(--transition);
   color: var(--text-muted);
+  box-shadow: var(--shadow-sm);
 
   .avail-dot {
     width: 10px; height: 10px;
@@ -143,19 +145,26 @@
 .sf-stat {
   flex: 1;
   text-align: center;
+  padding: 8px;
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  transition: all var(--transition);
 
   strong {
     display: block;
-    font-size: 1.8rem;
+    font-size: 2rem;
     line-height: 1;
     background: linear-gradient(135deg, var(--blood-red), var(--blood-dark));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
 
-  small { font-size: 0.75rem; color: var(--text-muted); }
+  small { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  
+  &:hover { transform: scale(1.05); border-color: var(--blood-red); box-shadow: var(--shadow-sm); }
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────

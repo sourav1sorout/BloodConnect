@@ -20,6 +20,7 @@
         <li><a routerLink="/search" routerLinkActive="active">Find Donors</a></li>
         <li *ngIf="!isLoggedIn"><a routerLink="/register" class="nav-link-cta">Become a Donor</a></li>
         <li *ngIf="isDonor && isLoggedIn"><a routerLink="/dashboard" routerLinkActive="active">My Dashboard</a></li>
+        <li *ngIf="!isDonor && !isAdmin && isLoggedIn"><a routerLink="/my-requests" routerLinkActive="active">My Requests</a></li>
         <li *ngIf="isAdmin"><a routerLink="/admin" routerLinkActive="active">Admin</a></li>
       </ul>
 
@@ -81,8 +82,9 @@
       </ng-container>
       <ng-container *ngIf="isLoggedIn">
         <li *ngIf="isDonor"><a routerLink="/dashboard" routerLinkActive="active" (click)="closeMenu()">My Dashboard</a></li>
+        <li *ngIf="!isDonor && !isAdmin"><a routerLink="/my-requests" routerLinkActive="active" (click)="closeMenu()">My Requests</a></li>
         <li *ngIf="!isDonor && !isAdmin"><a routerLink="/donor-register" (click)="closeMenu()">Become a Donor</a></li>
-        <li *ngIf="isAdmin"><a routerLink="/admin" (click)="closeMenu()">Admin Panel</a></li>
+        <li *ngIf="isAdmin"><a routerLink="/admin" routerLinkActive="active" (click)="closeMenu()">Admin Panel</a></li>
         <li><button class="mobile-logout" (click)="logout()">Logout</button></li>
       </ng-container>
     </ul>
