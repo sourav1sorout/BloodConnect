@@ -188,6 +188,18 @@ export interface DonorRegisterPayload {
   medicalConditions?: string;
 }
 
+export interface Notification {
+  _id: string;
+  recipient: string;
+  sender?: User;
+  type: 'request_new' | 'request_accepted' | 'request_rejected' | 'donor_approved' | 'donor_rejected' | 'system_alert';
+  title: string;
+  message: string;
+  link?: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
 export interface BloodRequestPayload {
   donorId: string;
   bloodGroup: BloodGroup;

@@ -228,6 +228,19 @@ const approveDonor = asyncHandler(async (req, res) => {
     : `Rejected donor ${donor.user?.name}. Reason: ${rejectionReason || 'No reason given'}`;
   await logAdminAction(req.user._id, action, 'Donor', donor._id, details);
 
+  // In-App Notification (non-blocking)
+  const Notification = require('../models/Notification');
+  Notification.create({
+    recipient: donor.user._id,
+    sender: req.user._id,
+    type: approve ? 'donor_approved' : 'donor_rejected',
+    title: approve ? 'Donor Profile Approved! 🎉' : 'Donor Profile Update',
+    message: approve 
+      ? 'Your donor profile has been approved. You are now visible to seekers.' 
+      : `Your donor profile review is complete. ${rejectionReason ? 'Reason: ' + rejectionReason : 'Please update your details.'}`,
+    link: approve ? '/dashboard' : '/donor-register',
+  }).catch((err) => console.error('Notification error:', err.message));
+
   successResponse(res, 200, `Donor ${approve ? 'approved' : 'rejected'} successfully`, { donor });
 });
 
@@ -333,6 +346,17 @@ const respondToRequest = asyncHandler(async (req, res) => {
     request._id,
     `Admin ${action} request for ${request.bloodGroup} by ${request.requester?.name}`
   );
+
+  // In-App Notification (non-blocking)
+  const Notification = require('../models/Notification');
+  Notification.create({
+    recipient: request.requester._id,
+    sender: req.user._id,
+    type: action === 'accepted' ? 'request_accepted' : 'request_rejected',
+    title: action === 'accepted' ? 'Admin: Request Approved 🩸' : 'Admin: Request Update',
+    message: `Your request for ${request.bloodGroup} blood has been ${action} by an administrator.`,
+    link: '/my-requests',
+  }).catch((err) => console.error('Notification error:', err.message));
 
   successResponse(res, 200, `Request ${action} by administrator`, { request });
 });

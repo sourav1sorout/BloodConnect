@@ -31,6 +31,7 @@
           <a routerLink="/register" class="btn btn-primary btn-sm">Sign Up</a>
         </ng-container>
         <ng-container *ngIf="isLoggedIn">
+          <app-notification-bell></app-notification-bell>
           <div class="nav-user" (click)="toggleDropdown()" #userBtn>
             <div class="avatar">{{ userInitial }}</div>
             <div class="user-info hide-tablet">
@@ -73,6 +74,9 @@
 
   <!-- Mobile Menu -->
   <div class="mobile-menu" [class.open]="menuOpen">
+    <div class="mobile-menu-header" *ngIf="isLoggedIn">
+      <app-notification-bell></app-notification-bell>
+    </div>
     <ul class="mobile-links">
       <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="closeMenu()">Home</a></li>
       <li><a routerLink="/search" routerLinkActive="active" (click)="closeMenu()">Find Donors</a></li>

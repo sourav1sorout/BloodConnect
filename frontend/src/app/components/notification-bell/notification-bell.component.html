@@ -1,0 +1,58 @@
+<!-- components/notification-bell/notification-bell.component.html -->
+<div class="notification-container">
+  <!-- Bell Icon -->
+  <button class="bell-icon" (click)="toggleDropdown()" [attr.aria-label]="'You have ' + unreadCount + ' notifications'">
+    <span class="bell">🔔</span>
+    <span class="badge animate-bounce" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+  </button>
+
+  <!-- Dropdown -->
+  <div class="notification-dropdown shadow-xl border border-slate-100" *ngIf="showDropdown">
+    <div class="nd-header flex items-center justify-between p-4 border-b border-slate-50">
+      <h3 class="text-sm font-bold text-slate-800">Notifications</h3>
+      <button class="text-xs font-bold text-blood-red hover:underline" 
+              *ngIf="unreadCount > 0" 
+              (click)="markAllRead()">Mark all as read</button>
+    </div>
+
+    <div class="nd-body max-h-[400px] overflow-y-auto">
+      <!-- Loading -->
+      <div *ngIf="loading" class="p-8 text-center">
+        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blood-red mx-auto"></div>
+      </div>
+
+      <!-- Empty -->
+      <div *ngIf="!loading && notifications.length === 0" class="p-10 text-center">
+        <div class="text-3xl mb-2">🎈</div>
+        <p class="text-xs text-slate-400 font-medium">All caught up!</p>
+      </div>
+
+      <!-- List -->
+      <ul class="nd-list" *ngIf="!loading && notifications.length > 0">
+        <li *ngFor="let n of notifications" 
+            class="nd-item border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer"
+            [class.unread]="!n.isRead"
+            (click)="markRead(n)">
+          <div class="flex items-start gap-3 p-4">
+            <div class="nd-icon w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-lg flex-shrink-0">
+               {{ getIcon(n.type) }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-0.5">
+                <span class="text-xs font-bold text-slate-900 truncate pr-2">{{ n.title }}</span>
+                <span class="text-[10px] text-slate-400 flex-shrink-0">{{ n.createdAt | date:'MMM d' }}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 leading-tight line-clamp-2">{{ n.message }}</p>
+            </div>
+            <div class="unread-dot w-2 h-2 rounded-full bg-blood-red mt-2" *ngIf="!n.isRead"></div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="nd-footer border-t border-slate-50 p-3 text-center">
+       <button class="text-[11px] font-bold text-slate-400 hover:text-slate-600 tracking-wide uppercase transition-colors">See earlier activity</button>
+    </div>
+  </div>
+</div>

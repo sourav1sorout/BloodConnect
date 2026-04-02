@@ -1,0 +1,82 @@
+// components/notification-bell/notification-bell.component.scss
+.notification-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.bell-icon {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-lg);
+  border: none;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  margin-right: 12px;
+
+  &:hover {
+    background: var(--border);
+    transform: translateY(-2px);
+  }
+
+  .badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--blood-red);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(192, 57, 43, 0.3);
+  }
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 320px;
+  background: white;
+  border-radius: var(--radius-xl);
+  z-index: 1000;
+  transform-origin: top right;
+  animation: dropdownIn 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+  overflow: hidden;
+}
+
+.nd-item {
+  &.unread {
+     background-color: rgba(192, 57, 43, 0.02);
+     .nd-icon { background-color: var(--danger-light); }
+  }
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 768px) {
+  .notification-dropdown {
+    position: fixed;
+    top: 72px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-height: 80vh;
+  }
+}

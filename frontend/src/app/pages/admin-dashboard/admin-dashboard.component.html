@@ -406,12 +406,12 @@
                       ✕ Reject
                     </button>
                   </div>
-                  <button
+                  <!-- <button
                     *ngIf="r.status === 'accepted' || r.status === 'pending'"
                     class="btn btn-ghost btn-sm text-muted"
                     (click)="cancelRequest(r._id)">
                     Cancel
-                  </button>
+                  </button> -->
                   <span *ngIf="r.status === 'completed' || r.status === 'cancelled' || r.status === 'rejected'" class="text-muted" style="font-size:0.8rem">
                     {{ r.status === 'rejected' ? 'Rejected' : '—' }}
                   </span>

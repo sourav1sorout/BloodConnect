@@ -96,6 +96,7 @@ app.use('/api/auth',    require('./routes/authRoutes'));
 app.use('/api/donors',  require('./routes/donorRoutes'));
 app.use('/api/requests', require('./routes/requestRoutes'));
 app.use('/api/admin',   require('./routes/adminRoutes'));
+app.use('/api/notifications', require('./routes/notificationRoutes'));
 
 // ─── Error Handling ────────────────────────────────────────────────────────────
 app.use(notFound);

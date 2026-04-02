@@ -69,6 +69,17 @@ const createRequest = asyncHandler(async (req, res) => {
     urgency
   ).catch((err) => console.error('Email error:', err.message));
 
+  // In-App Notification (non-blocking)
+  const Notification = require('../models/Notification');
+  Notification.create({
+    recipient: donor.user._id,
+    sender: req.user._id,
+    type: 'request_new',
+    title: 'New Blood Request 🩸',
+    message: `${req.user.name} needs ${unitsRequired} units of ${bloodGroup} blood at ${hospital.name}.`,
+    link: '/requests/incoming',
+  }).catch((err) => console.error('Notification error:', err.message));
+
   successResponse(res, 201, 'Blood request sent successfully', { request });
 });
 
@@ -165,6 +176,17 @@ const respondToRequest = asyncHandler(async (req, res) => {
     request.bloodGroup,
     responseMessage
   ).catch((err) => console.error('Email error:', err.message));
+
+  // In-App Notification (non-blocking)
+  const Notification = require('../models/Notification');
+  Notification.create({
+    recipient: request.requester._id,
+    sender: req.user._id,
+    type: action === 'accepted' ? 'request_accepted' : 'request_rejected',
+    title: action === 'accepted' ? 'Blood Request Accepted ✅' : 'Blood Request Declined ❌',
+    message: `${req.user.name} has ${action} your request for ${request.bloodGroup} blood.`,
+    link: '/my-requests',
+  }).catch((err) => console.error('Notification error:', err.message));
 
   successResponse(res, 200, `Request ${action} successfully`, { request });
 });
