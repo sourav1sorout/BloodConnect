@@ -23,6 +23,8 @@ app.use(helmet({
 // CORS
 const allowedOrigins = [
   process.env.CLIENT_URL || 'http://localhost:4200',
+  'https://blood-connect-orpin.vercel.app',
+  'https://bloodconnect-gamma.vercel.app',
   'http://localhost:4200',
   'http://localhost:3000',
 ];

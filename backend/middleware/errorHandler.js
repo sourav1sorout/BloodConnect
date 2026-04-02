@@ -57,10 +57,13 @@ const sendErrorProd = (err, res) => {
       message: err.message,
     });
   } else {
+    // 💡 REMINDER: Detailed errors reveal server internals, disable after fixing bugs!
     console.error('💥 UNEXPECTED ERROR:', err);
     res.status(500).json({
       success: false,
-      message: 'Something went wrong. Please try again later.',
+      message: err.message || 'Something went wrong. Please try again later.',
+      error: err,
+      stack: err.stack,
     });
   }
 };

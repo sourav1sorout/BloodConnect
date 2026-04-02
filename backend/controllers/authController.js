@@ -12,6 +12,7 @@ const { sendWelcomeEmail } = require('../utils/emailUtils');
  */
 const register = asyncHandler(async (req, res) => {
   const { name, email, password, role, phone } = req.body;
+  console.log(`📝 Register attempt for: ${email}`);
 
   // Check if user exists
   const existingUser = await User.findOne({ email });
@@ -21,6 +22,7 @@ const register = asyncHandler(async (req, res) => {
 
   // Create user
   const user = await User.create({ name, email, password, role: role || 'receiver', phone });
+  console.log(`✅ User registered: ${email}`);
 
   // Send welcome email (non-blocking)
   sendWelcomeEmail(email, name, user.role).catch((err) =>
@@ -37,11 +39,13 @@ const register = asyncHandler(async (req, res) => {
  */
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  console.log(`🔐 Login attempt for: ${email}`);
 
   // Find user with password
   const user = await User.findOne({ email }).select('+password');
 
   if (!user || !(await user.comparePassword(password))) {
+    console.log(`❌ Login failed for: ${email}`);
     throw new AppError('Invalid email or password.', 401);
   }
 
