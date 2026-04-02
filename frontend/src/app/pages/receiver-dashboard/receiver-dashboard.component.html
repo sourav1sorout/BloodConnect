@@ -16,164 +16,154 @@
     </div>
 
     <!-- Filters & Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <div class="card p-4 flex items-center gap-4 bg-white border border-slate-100 shadow-sm">
-        <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl">📩</div>
-        <div>
-          <div class="text-2xl font-bold leading-none">{{ requests.length }}</div>
-          <div class="text-xs uppercase font-bold text-slate-400 mt-1">Total Sent</div>
+    <div class="grid-stats mb-10">
+      <div class="stat-card">
+        <div class="sc-icon blue">📩</div>
+        <div class="sc-info">
+          <strong>{{ requests.length }}</strong>
+          <span>Total Requests</span>
         </div>
       </div>
-      <div class="card p-4 flex items-center gap-4 bg-white border border-slate-100 shadow-sm">
-        <div class="w-12 h-12 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center text-xl">⏳</div>
-        <div>
-          <div class="text-2xl font-bold leading-none">{{ countByStatus('pending') }}</div>
-          <div class="text-xs uppercase font-bold text-slate-400 mt-1">Pending</div>
+      <div class="stat-card">
+        <div class="sc-icon orange">⏳</div>
+        <div class="sc-info">
+          <strong>{{ countByStatus('pending') }}</strong>
+          <span>Pending</span>
         </div>
       </div>
-      <div class="card p-4 flex items-center gap-4 bg-white border border-slate-100 shadow-sm">
-        <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">✅</div>
-        <div>
-          <div class="text-2xl font-bold leading-none">{{ countByStatus('accepted') }}</div>
-          <div class="text-xs uppercase font-bold text-slate-400 mt-1">Accepted</div>
+      <div class="stat-card">
+        <div class="sc-icon emerald">✅</div>
+        <div class="sc-info">
+          <strong>{{ countByStatus('accepted') }}</strong>
+          <span>Accepted</span>
         </div>
       </div>
-      <div class="card p-4 flex items-center gap-4 bg-white border border-slate-100 shadow-sm">
-        <div class="w-12 h-12 rounded-full bg-slate-50 text-slate-600 flex items-center justify-center text-xl">🏁</div>
-        <div>
-          <div class="text-2xl font-bold leading-none">{{ countByStatus('completed') }}</div>
-          <div class="text-xs uppercase font-bold text-slate-400 mt-1">Completed</div>
+      <div class="stat-card">
+        <div class="sc-icon rose">❌</div>
+        <div class="sc-info">
+          <strong>{{ countByStatus('rejected') + countByStatus('cancelled') }}</strong>
+          <span>Closed / Rejected</span>
         </div>
       </div>
     </div>
 
-    <!-- Requests List -->
+    <!-- Requests Action Bar -->
     <div class="requests-results">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="text-lg font-bold text-slate-800">Your Recent Activity</h3>
-        <select class="form-control max-w-[180px] text-sm" [(ngModel)]="filter" (change)="loadRequests()">
-          <option value="">All Requests</option>
-          <option value="pending">⏳ Pending</option>
-          <option value="accepted">✅ Accepted</option>
-          <option value="rejected">❌ Rejected</option>
-          <option value="completed">🏁 Completed</option>
-        </select>
+      <div class="flex-between mb-8">
+        <h3 class="text-xl font-bold text-slate-800">Recent Activity Log</h3>
+        <div class="flex gap-4">
+           <select class="form-control text-sm w-44" [(ngModel)]="filter">
+             <option value="">All Statuses</option>
+             <option value="pending">⏳ Pending</option>
+             <option value="accepted">✅ Accepted</option>
+             <option value="rejected">❌ Rejected</option>
+             <option value="cancelled">🚫 Cancelled</option>
+             <option value="completed">🏁 Completed</option>
+           </select>
+        </div>
       </div>
 
       <!-- Loading State -->
-      <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-slate-200">
+      <div *ngIf="loading" class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-slate-100 shadow-sm">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blood-red mb-4"></div>
-        <p class="text-slate-500 font-medium">Fetching your requests...</p>
+        <p class="text-slate-500 font-medium">Updating your status...</p>
       </div>
 
       <!-- Empty State -->
-      <div *ngIf="!loading && requests.length === 0" class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-slate-200 text-center px-6">
-        <div class="text-6xl mb-6">🏜️</div>
-        <h3 class="text-xl font-bold text-slate-800 mb-2">No requests found</h3>
-        <p class="text-slate-500 max-w-sm">You haven't sent any blood requests yet. Finding a donor is the first step to getting help.</p>
-        <a routerLink="/search" class="btn btn-primary mt-6">Start Searching Now</a>
+      <div *ngIf="!loading && requests.length === 0" class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-dashed border-slate-200 text-center px-6">
+        <div class="text-7xl mb-8">🏜️</div>
+        <h3 class="text-2xl font-bold text-slate-900 mb-2">No activity found</h3>
+        <p class="text-slate-500 max-w-sm mx-auto">Your journey begins when you send your first blood request. Find someone who can help today.</p>
+        <a routerLink="/search" class="btn btn-primary mt-8 scale-110">Find a Donor Now</a>
       </div>
 
-      <!-- Request Cards -->
-      <div *ngIf="!loading && requests.length > 0" class="space-y-6">
-        <div *ngFor="let request of requests" 
-             class="request-card bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden">
+      <!-- Grid of Request Cards -->
+      <div *ngIf="!loading && requests.length > 0" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div *ngFor="let request of filteredRequests" 
+             class="request-grid-card bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden group">
           
-          <!-- Urgency Indicator -->
-          <div class="absolute top-0 left-0 w-1.5 h-full" 
-               [ngClass]="{
-                 'bg-rose-500': request.urgency === 'critical',
-                 'bg-orange-500': request.urgency === 'urgent',
-                 'bg-blue-500': request.urgency === 'normal'
-               }"></div>
+          <!-- Urgency Ribbon -->
+          <div class="urgency-ribbon" [ngClass]="'urgency-' + request.urgency">
+             {{ request.urgency }}
+          </div>
 
-          <div class="flex flex-col md:flex-row gap-6">
-            <!-- Donor Info -->
-            <div class="md:w-1/4 flex flex-col items-center text-center border-b md:border-b-0 md:border-r border-slate-100 pb-6 md:pb-0 md:pr-6">
-              <div class="avatar xl mb-4 ring-4 ring-slate-50">
+          <!-- Card Header (Donor Info) -->
+          <div class="p-6 border-b border-slate-50 bg-slate-50/50">
+            <div class="flex items-center gap-4">
+              <div class="avatar lg shadow-inner ring-4 ring-white">
                 <img *ngIf="request.donor.user.avatar" [src]="request.donor.user.avatar" [alt]="request.donor.user.name">
-                <span *ngIf="!request.donor.user.avatar" class="text-2xl">{{ request.donor.user.name.charAt(0) }}</span>
+                <span *ngIf="!request.donor.user.avatar">{{ request.donor.user.name.charAt(0) }}</span>
               </div>
-              <h4 class="font-bold text-slate-900 mb-1">{{ request.donor.user.name }}</h4>
-              <span class="blood-badge lg mb-3">{{ request.bloodGroup }}</span>
-              <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">Target Donor</div>
-            </div>
-
-            <!-- Request Details -->
-            <div class="flex-1">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                   <span class="status-badge" [ngClass]="'status-' + request.status">
-                     {{ request.status | titlecase }}
-                   </span>
-                   <span class="text-xs text-slate-400 font-medium">Sent on {{ request.createdAt | date:'MMM d, yyyy' }}</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter" 
-                        [ngClass]="{
-                          'bg-rose-100 text-rose-600': request.urgency === 'critical',
-                          'bg-orange-100 text-orange-600': request.urgency === 'urgent',
-                          'bg-blue-100 text-blue-600': request.urgency === 'normal'
-                        }">{{ request.urgency }}</span>
+              <div class="flex-1">
+                <h4 class="font-bold text-slate-900 flex items-center gap-2">
+                  {{ request.donor.user.name }}
+                  <span class="blood-badge sm">{{ request.bloodGroup }}</span>
+                </h4>
+                <div class="flex items-center gap-2 mt-1">
+                   <span class="status-dot" [ngClass]="'status-' + request.status"></span>
+                   <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">{{ request.status }}</span>
                 </div>
               </div>
-
-              <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                <div>
-                  <label class="block text-[10px] uppercase font-black text-slate-400 tracking-wider mb-1">Patient Name</label>
-                  <p class="font-bold text-slate-800">{{ request.patientName }}</p>
-                </div>
-                <div>
-                  <label class="block text-[10px] uppercase font-black text-slate-400 tracking-wider mb-1">Units Needed</label>
-                  <p class="font-bold text-slate-800">{{ request.unitsRequired }} Unit{{ request.unitsRequired > 1 ? 's' : '' }}</p>
-                </div>
-                <div>
-                  <label class="block text-[10px] uppercase font-black text-slate-400 tracking-wider mb-1">Target Date</label>
-                  <p class="font-bold text-slate-800">{{ request.neededBy | date:'MMM d, h:mm a' }}</p>
-                </div>
-                <div class="col-span-2 lg:col-span-3">
-                  <label class="block text-[10px] uppercase font-black text-slate-400 tracking-wider mb-1">Hospital Location</label>
-                  <p class="font-bold text-slate-800 flex items-center gap-2 text-sm">
-                    <span class="text-slate-400">🏥</span> {{ request.hospital.name }}, {{ request.hospital.city }}
-                  </p>
-                </div>
-              </div>
-
-              <!-- Message from Receiver -->
-              <div class="bg-slate-50 rounded-xl p-4 mb-4 border border-slate-100" *ngIf="request.message">
-                <p class="text-xs text-slate-600 italic">"{{ request.message }}"</p>
-              </div>
-
-              <!-- Response from Donor -->
-              <div class="bg-emerald-50 rounded-xl p-4 border border-emerald-100" *ngIf="request.status === 'accepted' || request.status === 'rejected'">
-                <div class="flex items-center gap-2 mb-1">
-                  <span class="text-sm">💬</span>
-                  <span class="text-xs font-bold text-emerald-700">Donor Response:</span>
-                </div>
-                <p class="text-sm text-emerald-800">{{ request.responseMessage || 'No message provided.' }}</p>
-                <div class="mt-3 flex items-center gap-4" *ngIf="request.status === 'accepted'">
-                   <div class="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-white/50 px-2 py-1 rounded border border-emerald-200">
-                     <span>📞</span> {{ request.donor.user.phone || 'Contact provided privately' }}
-                   </div>
-                </div>
+              <div class="text-right">
+                <div class="text-[10px] uppercase font-black text-slate-400 mb-1 leading-none">Wanted</div>
+                <div class="text-lg font-black text-blood-red leading-none">{{ request.unitsRequired }}u</div>
               </div>
             </div>
           </div>
 
-          <!-- Actions -->
-          <div class="mt-6 pt-6 border-t border-slate-50 flex items-center justify-end gap-3">
-            <button *ngIf="request.status === 'pending'" 
-                    (click)="cancelRequest(request._id)" 
-                    class="btn btn-ghost btn-sm text-rose-600 hover:bg-rose-50">Cancel Request</button>
-            
-            <button *ngIf="request.status === 'accepted'" 
-                    (click)="completeRequest(request._id)" 
-                    class="btn btn-success btn-sm">Mark as Received</button>
+          <!-- Card Details Grid -->
+          <div class="p-6">
+            <div class="grid grid-cols-2 gap-y-5 gap-x-4 mb-6">
+              <div>
+                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Patient</label>
+                <p class="text-sm font-bold text-slate-800 truncate">{{ request.patientName }}</p>
+              </div>
+              <div>
+                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Needed By</label>
+                <p class="text-sm font-bold text-slate-800">{{ request.neededBy | date:'MMM d, HH:mm' }}</p>
+              </div>
+              <div class="col-span-2">
+                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Location</label>
+                <p class="text-sm font-bold text-slate-700 flex items-start gap-1.5">
+                  <span class="text-sm">🏥</span> {{ request.hospital.name }}, {{ request.hospital.city }}
+                </p>
+              </div>
+            </div>
 
-            <a [routerLink]="['/donor', request.donor._id]" class="btn btn-outline btn-sm">View Donor Profile</a>
+            <!-- Messages Toggle-able or Inline -->
+            <div class="bg-indigo-50/50 p-4 rounded-2xl mb-5 space-y-3" *ngIf="request.message || request.responseMessage">
+               <div *ngIf="request.message">
+                 <div class="text-[9px] uppercase font-bold text-indigo-400 mb-1">Your Message</div>
+                 <p class="text-xs text-indigo-700 italic">"{{ request.message }}"</p>
+               </div>
+               <div *ngIf="request.responseMessage" class="pt-2 border-t border-indigo-100">
+                 <div class="text-[9px] uppercase font-bold text-emerald-500 mb-1">Donor Response</div>
+                 <p class="text-xs text-emerald-800 font-medium">"{{ request.responseMessage }}"</p>
+                 <div class="mt-2 flex items-center gap-2 text-[10px] font-bold text-emerald-600" *ngIf="request.status === 'accepted'">
+                    📞 {{ request.donor.user.phone || 'Contact via profile' }}
+                 </div>
+               </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+              <span class="text-[11px] text-slate-400 font-medium">{{ request.createdAt | date:'MMM d' }}</span>
+              <div class="flex gap-2">
+                <button *ngIf="request.status === 'pending'" (click)="cancelRequest(request._id)" 
+                        class="btn-icon danger" title="Cancel Request">🚫</button>
+                
+                <button *ngIf="request.status === 'accepted'" (click)="completeRequest(request._id)" 
+                        class="btn btn-success btn-xs">Received</button>
+
+                <a [routerLink]="['/donor', request.donor._id]" class="btn btn-outline btn-xs px-3">Profile</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
     </div>
   </div>
 </div>
