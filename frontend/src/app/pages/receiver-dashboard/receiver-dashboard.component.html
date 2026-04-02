@@ -49,8 +49,9 @@
 
     <!-- Requests Action Bar -->
     <div class="requests-results">
-      <div class="flex-between mb-8">
-        <h3 class="text-xl font-bold text-slate-800">Recent Activity Log</h3>
+      <!-- Header Log Title -->
+      <div class="flex-between mb-8 px-2">
+        <h3 class="text-xl font-bold text-slate-800 tracking-tight">Recent Activity Log</h3>
         <div class="flex gap-4">
            <select class="form-control text-sm w-44" [(ngModel)]="filter">
              <option value="">All Statuses</option>
@@ -66,101 +67,100 @@
       <!-- Loading State -->
       <div *ngIf="loading" class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-slate-100 shadow-sm">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blood-red mb-4"></div>
-        <p class="text-slate-500 font-medium">Updating your status...</p>
+        <p class="text-slate-500 font-medium tracking-wide">Retrieving your activity...</p>
       </div>
 
       <!-- Empty State -->
       <div *ngIf="!loading && requests.length === 0" class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-dashed border-slate-200 text-center px-6">
         <div class="text-7xl mb-8">🏜️</div>
         <h3 class="text-2xl font-bold text-slate-900 mb-2">No activity found</h3>
-        <p class="text-slate-500 max-w-sm mx-auto">Your journey begins when you send your first blood request. Find someone who can help today.</p>
-        <a routerLink="/search" class="btn btn-primary mt-8 scale-110">Find a Donor Now</a>
+        <p class="text-slate-500 max-w-sm mx-auto">Your journey begins when you send your first blood request. Reach out to a potential donor today.</p>
+        <a routerLink="/search" class="btn btn-primary mt-8 px-10">Search Donors</a>
       </div>
 
-      <!-- Grid of Request Cards -->
-      <div *ngIf="!loading && requests.length > 0" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Grid of Request Cards (3 Cols on XL) -->
+      <div *ngIf="!loading && requests.length > 0" 
+           class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+        
         <div *ngFor="let request of filteredRequests" 
              class="request-grid-card bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden group">
           
-          <!-- Urgency Ribbon -->
-          <div class="urgency-ribbon" [ngClass]="'urgency-' + request.urgency">
+          <!-- Urgency Label (Modern) -->
+          <div class="urgency-label" [ngClass]="'urg-' + request.urgency">
              {{ request.urgency }}
           </div>
 
           <!-- Card Header (Donor Info) -->
-          <div class="p-6 border-b border-slate-50 bg-slate-50/50">
-            <div class="flex items-center gap-4">
-              <div class="avatar lg shadow-inner ring-4 ring-white">
+          <div class="p-5 border-b border-slate-50 bg-slate-50/50">
+            <div class="flex items-center gap-3">
+              <div class="avatar md ring-4 ring-white shadow-inner">
                 <img *ngIf="request.donor.user.avatar" [src]="request.donor.user.avatar" [alt]="request.donor.user.name">
                 <span *ngIf="!request.donor.user.avatar">{{ request.donor.user.name.charAt(0) }}</span>
               </div>
-              <div class="flex-1">
-                <h4 class="font-bold text-slate-900 flex items-center gap-2">
-                  {{ request.donor.user.name }}
-                  <span class="blood-badge sm">{{ request.bloodGroup }}</span>
+              <div class="flex-1 min-w-0">
+                <h4 class="font-bold text-slate-900 truncate">
+                  {{ request.donor.user.name | titlecase }}
                 </h4>
-                <div class="flex items-center gap-2 mt-1">
-                   <span class="status-dot" [ngClass]="'status-' + request.status"></span>
-                   <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">{{ request.status }}</span>
+                <div class="flex items-center gap-2 mt-0.5">
+                   <span class="status-indicator" [ngClass]="'st-' + request.status"></span>
+                   <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ request.status }}</span>
                 </div>
               </div>
-              <div class="text-right">
-                <div class="text-[10px] uppercase font-black text-slate-400 mb-1 leading-none">Wanted</div>
-                <div class="text-lg font-black text-blood-red leading-none">{{ request.unitsRequired }}u</div>
+              <div class="blood-pill bg-white shadow-sm border border-slate-100">
+                {{ request.bloodGroup }}
               </div>
             </div>
           </div>
 
-          <!-- Card Details Grid -->
-          <div class="p-6">
-            <div class="grid grid-cols-2 gap-y-5 gap-x-4 mb-6">
+          <!-- Card Specifics (Compact 2-grid) -->
+          <div class="p-5">
+            <div class="grid grid-cols-2 gap-4 mb-5">
               <div>
-                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Patient</label>
-                <p class="text-sm font-bold text-slate-800 truncate">{{ request.patientName }}</p>
+                <label class="block text-[9px] uppercase font-bold text-slate-400 mb-1">Patient</label>
+                <p class="text-[13px] font-bold text-slate-800 truncate">{{ request.patientName }}</p>
               </div>
-              <div>
-                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Needed By</label>
-                <p class="text-sm font-bold text-slate-800">{{ request.neededBy | date:'MMM d, HH:mm' }}</p>
+              <div class="text-right">
+                <label class="block text-[9px] uppercase font-bold text-slate-400 mb-1">Quantity</label>
+                <p class="text-[13px] font-bold text-blood-red">{{ request.unitsRequired }} Unit{{ request.unitsRequired > 1 ? 's' : '' }}</p>
               </div>
               <div class="col-span-2">
-                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Location</label>
-                <p class="text-sm font-bold text-slate-700 flex items-start gap-1.5">
-                  <span class="text-sm">🏥</span> {{ request.hospital.name }}, {{ request.hospital.city }}
+                <label class="block text-[9px] uppercase font-bold text-slate-400 mb-1">Clinic / Hospital</label>
+                <p class="text-[12px] font-bold text-slate-600 line-clamp-1">
+                  🏥 {{ request.hospital.name }}
                 </p>
               </div>
             </div>
 
-            <!-- Messages Toggle-able or Inline -->
-            <div class="bg-indigo-50/50 p-4 rounded-2xl mb-5 space-y-3" *ngIf="request.message || request.responseMessage">
+            <!-- Messages Toggle-able or Inline (Fixed Height for Alignment) -->
+            <div class="msg-box min-h-[60px] bg-indigo-50/30 p-3 rounded-2xl mb-4" *ngIf="request.message || request.responseMessage">
                <div *ngIf="request.message">
-                 <div class="text-[9px] uppercase font-bold text-indigo-400 mb-1">Your Message</div>
-                 <p class="text-xs text-indigo-700 italic">"{{ request.message }}"</p>
+                 <p class="text-[11px] text-indigo-700 italic leading-snug">"{{ request.message | truncate:60 }}"</p>
                </div>
-               <div *ngIf="request.responseMessage" class="pt-2 border-t border-indigo-100">
-                 <div class="text-[9px] uppercase font-bold text-emerald-500 mb-1">Donor Response</div>
-                 <p class="text-xs text-emerald-800 font-medium">"{{ request.responseMessage }}"</p>
-                 <div class="mt-2 flex items-center gap-2 text-[10px] font-bold text-emerald-600" *ngIf="request.status === 'accepted'">
-                    📞 {{ request.donor.user.phone || 'Contact via profile' }}
-                 </div>
+               <div *ngIf="request.responseMessage" class="mt-2 pt-2 border-t border-indigo-100/50">
+                 <p class="text-[11px] text-emerald-800 font-medium">"{{ request.responseMessage | truncate:60 }}"</p>
                </div>
             </div>
 
-            <!-- Footer Actions -->
+            <!-- Card Actions -->
             <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-              <span class="text-[11px] text-slate-400 font-medium">{{ request.createdAt | date:'MMM d' }}</span>
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">{{ request.createdAt | date:'MMM d, HH:mm' }}</span>
               <div class="flex gap-2">
                 <button *ngIf="request.status === 'pending'" (click)="cancelRequest(request._id)" 
-                        class="btn-icon danger" title="Cancel Request">🚫</button>
+                        class="btn-icon danger sm" title="Cancel Request">🚫</button>
                 
                 <button *ngIf="request.status === 'accepted'" (click)="completeRequest(request._id)" 
-                        class="btn btn-success btn-xs">Received</button>
+                        class="btn btn-success btn-xs px-3">Received</button>
 
-                <a [routerLink]="['/donor', request.donor._id]" class="btn btn-outline btn-xs px-3">Profile</a>
+                <a [routerLink]="['/donor', request.donor._id]" class="btn btn-outline btn-xs px-4 rounded-xl">View</a>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
     </div>
   </div>
 </div>

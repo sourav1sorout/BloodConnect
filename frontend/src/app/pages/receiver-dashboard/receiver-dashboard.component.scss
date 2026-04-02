@@ -2,17 +2,17 @@
 .grid-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .stat-card {
   background: white;
-  padding: 1.5rem;
-  border-radius: 1.5rem;
+  padding: 1.25rem;
+  border-radius: 1.25rem;
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1rem;
   transition: all var(--transition-fast);
 
   &:hover {
@@ -21,73 +21,89 @@
   }
 
   .sc-icon {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
 
-    &.blue { background: #eff6ff; color: #2563eb; }
-    &.orange { background: #fff7ed; color: #ea580c; }
-    &.emerald { background: #ecfdf5; color: #059669; }
-    &.rose { background: #fff1f2; color: #e11d48; }
+    &.blue { background: #eff6ff; color: #3b82f6; }
+    &.orange { background: #fff7ed; color: #f97316; }
+    &.emerald { background: #ecfdf5; color: #10b981; }
+    &.rose { background: #fff1f2; color: #f43f5e; }
   }
 
   .sc-info {
-    strong { display: block; font-size: 1.5rem; line-height: 1; color: var(--text-primary); }
-    span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); opacity: 0.8; }
+    strong { display: block; font-size: 1.25rem; font-weight: 800; line-height: 1.1; color: var(--text-primary); }
+    span { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
   }
 }
 
 .request-grid-card {
-  .urgency-ribbon {
+  border-color: rgba(0,0,0,0.04);
+  
+  .urgency-label {
     position: absolute;
-    top: 12px;
-    right: -30px;
-    transform: rotate(45deg);
-    width: 120px;
-    text-align: center;
-    font-size: 9px;
+    top: 10px;
+    right: 10px;
+    font-size: 8px;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 4px 0;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    border-radius: 99px;
     color: white;
     z-index: 10;
+    pointer-events: none;
 
-    &.urgency-critical { background: var(--blood-red); box-shadow: 0 2px 10px rgba(192, 57, 43, 0.3); }
-    &.urgency-urgent { background: #f97316; }
-    &.urgency-normal { background: #3b82f6; }
+    &.urg-critical { background: var(--blood-red); box-shadow: 0 4px 12px rgba(193, 18, 31, 0.3); }
+    &.urg-urgent { background: #f97316; }
+    &.urg-normal { background: #64748b; }
+  }
+
+  .avatar.md { width: 36px; height: 36px; font-size: 0.9rem; }
+  
+  .blood-pill {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 8px;
+    color: var(--blood-red);
+  }
+
+  .msg-box {
+    border: 1px solid rgba(0,0,0,0.02);
   }
 }
 
-.status-dot {
-  width: 8px;
-  height: 8px;
+.status-indicator {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   
-  &.status-pending { background: #f59e0b; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1); }
-  &.status-accepted { background: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
-  &.status-completed { background: #6366f1; }
-  &.status-rejected, &.status-cancelled { background: #94a3b8; }
+  &.st-pending { background: #f59e0b; }
+  &.st-accepted { background: #10b981; }
+  &.st-completed { background: #6366f1; }
+  &.st-rejected, &.st-cancelled { background: #94a3b8; }
 }
 
 .btn-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   border: none;
   cursor: pointer;
   transition: all 0.2s;
 
-  &.danger { background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; }
-  &:hover { transform: scale(1.1); }
+  &.danger { background: #fef2f2; color: #ef4444; border: 1px solid #fee2e2; }
+  &:hover { transform: scale(1.05); }
+  &.sm { width: 28px; height: 28px; font-size: 0.75rem; }
 }
 
 .flex-between {
@@ -97,6 +113,6 @@
 }
 
 @media (max-width: 640px) {
-  .flex-between { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .flex-between { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
   .grid-stats { grid-template-columns: 1fr 1fr; }
 }
