@@ -4,7 +4,7 @@ const router = express.Router();
 const {
   getDashboardStats, getAllUsers, toggleUserStatus,
   deleteUser, getAllDonors, approveDonor, getAllRequests,
-  cancelRequest, exportUsers, exportRequests, bulkEmail, getAuditLogs,
+  cancelRequest, respondToRequest, exportUsers, exportRequests, bulkEmail, getAuditLogs,
 } = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/auth');
 const { validateObjectId } = require('../middleware/validate');

@@ -510,6 +510,7 @@ module.exports = {
   approveDonor,
   getAllRequests,
   cancelRequest,
+  respondToRequest,
   exportUsers,
   exportRequests,
   bulkEmail,
