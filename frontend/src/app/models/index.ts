@@ -188,7 +188,7 @@ export interface DonorRegisterPayload {
   medicalConditions?: string;
 }
 
-export interface Notification {
+export interface AppNotification {
   _id: string;
   recipient: string;
   sender?: User;

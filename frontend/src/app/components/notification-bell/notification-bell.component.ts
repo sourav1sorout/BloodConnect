@@ -1,20 +1,20 @@
 // components/notification-bell/notification-bell.component.ts
 import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
-import { Notification } from '../../models';
+import { AppNotification } from '../../models';
 
 @Component({
   selector: 'app-notification-bell',
   standalone: true,
-  imports: [CommonModule, RouterModule, DatePipe],
+  imports: [CommonModule, RouterModule],
   templateUrl: './notification-bell.component.html',
   styleUrls: ['./notification-bell.component.scss'],
 })
 export class NotificationBellComponent implements OnInit, OnDestroy {
-  notifications: Notification[] = [];
+  notifications: AppNotification[] = [];
   unreadCount = 0;
   showDropdown = false;
   loading = false;
@@ -65,7 +65,7 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
     }
   }
 
-  markRead(n: Notification) {
+  markRead(n: AppNotification) {
     if (n.isRead) {
        if (n.link) this.router.navigate([n.link]);
        this.showDropdown = false;

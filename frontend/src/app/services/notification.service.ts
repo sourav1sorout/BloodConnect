@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { ApiResponse, Notification } from '../models';
+import { ApiResponse, AppNotification } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
@@ -14,9 +14,9 @@ export class NotificationService {
 
   constructor(private http: HttpClient) {}
 
-  getNotifications(page = 1, limit = 10): Observable<ApiResponse<{ notifications: Notification[], unreadCount: number }>> {
+  getNotifications(page = 1, limit = 10): Observable<ApiResponse<{ notifications: AppNotification[], unreadCount: number }>> {
     const params = new HttpParams().set('page', page).set('limit', limit);
-    return this.http.get<ApiResponse<{ notifications: Notification[], unreadCount: number }>>(this.apiUrl, { params })
+    return this.http.get<ApiResponse<{ notifications: AppNotification[], unreadCount: number }>>(this.apiUrl, { params })
       .pipe(
         tap(res => {
           if (res.data) {
@@ -26,8 +26,8 @@ export class NotificationService {
       );
   }
 
-  markAsRead(id: string): Observable<ApiResponse<{ notification: Notification }>> {
-    return this.http.patch<ApiResponse<{ notification: Notification }>>(`${this.apiUrl}/${id}/read`, {})
+  markAsRead(id: string): Observable<ApiResponse<{ notification: AppNotification }>> {
+    return this.http.patch<ApiResponse<{ notification: AppNotification }>>(`${this.apiUrl}/${id}/read`, {})
       .pipe(
         tap(() => {
           const current = this.unreadCountSubject.value;

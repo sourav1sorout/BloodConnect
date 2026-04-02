@@ -1,6 +1,6 @@
 // controllers/notificationController.js
 const Notification = require('../models/Notification');
-const { asyncHandler, successResponse, getPagination, buildPaginationMeta } = require('../utils/apiResponse');
+const { AppError, asyncHandler, successResponse, getPagination, buildPaginationMeta } = require('../utils/apiResponse');
 
 /**
  * @desc    Get all notifications for current user
