@@ -54,6 +54,9 @@
             <a *ngIf="isDonor" routerLink="/dashboard" class="dropdown-item">
               <span class="di-icon">📊</span> My Dashboard
             </a>
+            <a routerLink="/my-requests" class="dropdown-item" *ngIf="!isAdmin">
+               <span class="di-icon">📩</span> My Requests
+            </a>
             <a *ngIf="isAdmin" routerLink="/admin" class="dropdown-item">
               <span class="di-icon">⚙️</span> Admin Panel
             </a>
