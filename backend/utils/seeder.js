@@ -29,6 +29,7 @@ const seedData = async () => {
         name: process.env.ADMIN_NAME || 'Super Admin',
         email: adminEmail,
         password: process.env.ADMIN_PASSWORD || 'Admin@12345',
+        phone: '9999999999', // Default admin phone
         role: 'admin',
         isActive: true,
         isVerified: true,
@@ -77,6 +78,7 @@ const seedData = async () => {
         name: `Receiver ${i + 1}`,
         email: `receiver${i + 1}@example.com`,
         password: 'Receiver@12345',
+        phone: `97${String(Math.floor(Math.random() * 100000000)).padStart(8, '0')}`,
         role: 'receiver',
         isActive: true,
       });
