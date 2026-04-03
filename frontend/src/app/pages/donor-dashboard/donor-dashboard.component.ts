@@ -25,6 +25,7 @@ export class DonorDashboardComponent implements OnInit {
   donorRequests: BloodRequest[] = [];
   requestFilter = '';
   requestsLoading = false;
+  loadingProfile = true; // New loading state
   toggleLoading = false;
   profileForm!: FormGroup;
   profileLoading = false;
@@ -64,6 +65,7 @@ export class DonorDashboardComponent implements OnInit {
   }
 
   loadProfile() {
+    this.loadingProfile = true;
     this.donorService.getMyProfile().subscribe({
       next: (res) => {
         this.donor = res.data?.donor || null;
@@ -74,8 +76,15 @@ export class DonorDashboardComponent implements OnInit {
           this.loadRequests();
           this.updateTabs();
         }
+        this.loadingProfile = false;
       },
-      error: () => {},
+      error: (err) => {
+        this.loadingProfile = false;
+        if (err.status === 404) {
+          this.toast.error('Donor profile not found', 'Redirecting to registration...');
+          // Optional: this.router.navigate(['/donor-register']);
+        }
+      },
     });
   }
 
@@ -87,7 +96,7 @@ export class DonorDashboardComponent implements OnInit {
 
   loadRecentRequests() {
     this.requestService.getDonorRequests({ limit: 5 }).subscribe({
-      next: (res) => { this.recentRequests = (res.data?.requests || []).slice(0, 5); },
+      next: (res) => { this.recentRequests = res.data?.requests || []; },
     });
   }
 
@@ -106,6 +115,7 @@ export class DonorDashboardComponent implements OnInit {
   }
 
   updateTabs() {
+    if (!this.tabs[1]) return;
     const pending = this.donorRequests.filter(r => r.status === 'pending').length;
     this.tabs[1].badge = pending > 0 ? pending : null;
   }

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DonorService } from '../../services/donor.service';
+import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 
 @Component({
@@ -35,7 +36,13 @@ export class DonorRegisterComponent implements OnInit {
     'Puducherry','Chandigarh',
   ];
 
-  constructor(private fb: FormBuilder, private donorService: DonorService, private router: Router, private toast: ToastService) {}
+  constructor(
+    private fb: FormBuilder, 
+    private donorService: DonorService, 
+    private authService: AuthService,
+    private router: Router, 
+    private toast: ToastService
+  ) {}
 
   ngOnInit() {
     this.donorForm = this.fb.group({
@@ -91,9 +98,18 @@ export class DonorRegisterComponent implements OnInit {
 
     this.donorService.registerDonor(payload).subscribe({
       next: () => {
-        this.loading = false;
-        this.toast.success('Registered as Donor!', 'Your profile is pending admin approval.');
-        this.router.navigate(['/dashboard']);
+        // Refresh session to get 'donor' role
+        this.authService.getMe().subscribe({
+          next: () => {
+            this.loading = false;
+            this.toast.success('Registered as Donor!', 'Your profile is pending admin approval.');
+            this.router.navigate(['/dashboard']);
+          },
+          error: () => {
+            this.loading = false;
+            this.router.navigate(['/dashboard']);
+          }
+        });
       },
       error: (err) => {
         this.loading = false;

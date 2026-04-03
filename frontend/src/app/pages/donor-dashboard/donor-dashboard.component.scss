@@ -387,7 +387,47 @@
   font-size: 0.875rem; color: var(--success); margin-top: 12px;
 }
 
-// ── Responsive ────────────────────────────────────────────────────────────────
+// ... (Rest of existing SCSS remains same) ...
+// ── Loading & Empty States ───────────────────────────────────────────────────
+.loading-full, .empty-state-full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 400px;
+  padding: 40px;
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+
+  p { color: var(--text-muted); margin-top: 16px; font-size: 1.1rem; }
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--blood-pale);
+  border-top-color: var(--blood-red);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.empty-icon-main {
+  font-size: 4rem;
+  margin-bottom: 24px;
+}
+
+.empty-state-full {
+  h2 { font-size: 1.75rem; margin-bottom: 12px; font-family: var(--font-display); }
+  p { max-width: 400px; margin-bottom: 24px; }
+}
+
 @media (max-width: 1200px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .info-grid { grid-template-columns: repeat(2, 1fr); } }
 
 @media (max-width: 1024px) {
@@ -402,10 +442,11 @@
 @media (max-width: 768px) {
   .dashboard-main { padding: 20px 16px; }
   .rc-details { grid-template-columns: 1fr 1fr; }
-  .stats-row, .info-grid { grid-template-columns: 1fr 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .profile-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {
-  .stats-row, .info-grid { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: 1fr; }
   .rc-details { grid-template-columns: 1fr; }
 }
