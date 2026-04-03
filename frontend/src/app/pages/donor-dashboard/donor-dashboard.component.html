@@ -15,9 +15,14 @@
 
         <div class="sidebar-avail">
           <div class="avail-label">Availability Status</div>
-          <button class="avail-toggle" [class.available]="donor.isAvailable" (click)="toggleAvailability()" [disabled]="toggleLoading">
+          <button 
+            class="avail-toggle" 
+            [class.available]="donor.isAvailable"
+            [class.unavailable]="!donor.isAvailable"
+            (click)="toggleAvailability()" 
+            [disabled]="toggleLoading">
             <span class="avail-dot"></span>
-            {{ donor.isAvailable ? 'Available' : 'Unavailable' }}
+            <span class="avail-text">{{ toggleLoading ? 'Updating...' : (donor.isAvailable ? 'Available' : 'Unavailable') }}</span>
           </button>
         </div>
 
@@ -29,16 +34,36 @@
           </button>
         </nav>
 
-        <div class="sidebar-footer">
-          <div class="sf-stat">
-            <strong class="font-display">{{ donor.totalDonations || 0 }}</strong>
-            <small>Total Donations</small>
+        <!-- Stats List Panel -->
+        <div class="sidebar-stats-panel">
+          <div class="ssp-title">My Stats</div>
+          <div class="ssp-item">
+            <span class="ssp-icon">🩸</span>
+            <span class="ssp-label">Total Donations</span>
+            <strong class="ssp-value">{{ donor.totalDonations || 0 }}</strong>
           </div>
-          <div class="sf-stat">
-            <strong class="font-display">{{ pendingCount }}</strong>
-            <small>Pending Requests</small>
+          <div class="ssp-item">
+            <span class="ssp-icon">⏳</span>
+            <span class="ssp-label">Pending Requests</span>
+            <strong class="ssp-value pending">{{ pendingCount }}</strong>
+          </div>
+          <div class="ssp-item">
+            <span class="ssp-icon">✅</span>
+            <span class="ssp-label">Accepted</span>
+            <strong class="ssp-value success">{{ stats?.accepted || 0 }}</strong>
+          </div>
+          <div class="ssp-item">
+            <span class="ssp-icon">📍</span>
+            <span class="ssp-label">City</span>
+            <strong class="ssp-value small">{{ donor.address?.city || '—' }}</strong>
+          </div>
+          <div class="ssp-item">
+            <span class="ssp-icon">🗓️</span>
+            <span class="ssp-label">Member Since</span>
+            <strong class="ssp-value small">{{ donor.createdAt | date:'MMM yyyy' }}</strong>
           </div>
         </div>
+
       </div>
     </aside>
 

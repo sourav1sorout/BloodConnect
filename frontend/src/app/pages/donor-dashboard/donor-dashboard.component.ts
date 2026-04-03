@@ -111,14 +111,28 @@ export class DonorDashboardComponent implements OnInit {
   }
 
   toggleAvailability() {
+    if (!this.donor) return;
+    // Optimistic update — change UI instantly
+    const prevState = this.donor.isAvailable;
+    this.donor.isAvailable = !prevState;
     this.toggleLoading = true;
+
     this.donorService.toggleAvailability().subscribe({
       next: (res) => {
         this.toggleLoading = false;
-        if (this.donor) this.donor.isAvailable = res.data?.isAvailable ?? !this.donor.isAvailable;
-        this.toast.success('Status Updated', res.message);
+        // Confirm with server value
+        if (this.donor) this.donor.isAvailable = res.data?.isAvailable ?? this.donor.isAvailable;
+        this.toast.success(
+          this.donor?.isAvailable ? '🟢 You are now Available' : '🔴 You are now Unavailable',
+          res.message
+        );
       },
-      error: () => { this.toggleLoading = false; this.toast.error('Failed to update status'); },
+      error: () => {
+        // Revert on failure
+        this.toggleLoading = false;
+        if (this.donor) this.donor.isAvailable = prevState;
+        this.toast.error('Failed to update status');
+      },
     });
   }
 
