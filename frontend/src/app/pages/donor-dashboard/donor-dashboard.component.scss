@@ -7,7 +7,7 @@
   padding-top: var(--nav-height);
 }
 
-// ── Sidebar (White, matches Admin style) ──────────────────────────────────────
+// ── Sidebar ───────────────────────────────────────────────────────────────────
 .sidebar {
   background: white;
   border-right: 1px solid var(--border);
@@ -25,22 +25,18 @@
   height: 100%;
 }
 
-// Brand header — same style as admin
 .sidebar-brand {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 8px 16px 16px;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: var(--text-primary);
   border-bottom: 1px solid var(--border);
   letter-spacing: 0.04em;
-
-  .sb-icon { font-size: 1.3rem; }
 }
 
-// Donor profile card
 .sidebar-profile {
   display: flex;
   align-items: center;
@@ -50,15 +46,19 @@
   border-radius: var(--radius-lg);
 
   .sp-info {
-    h4 { font-size: 0.875rem; margin-bottom: 4px; font-family: var(--font-display); }
-    .blood-badge { font-size: 0.75rem; padding: 2px 10px; }
+    h4 {
+      font-size: 0.875rem;
+      margin-bottom: 4px;
+      font-family: var(--font-display);
+      letter-spacing: 0.03em;
+    }
   }
 }
 
-// ── Availability — iOS-style toggle switch ─────────────────────────────────
-.sidebar-avail { padding: 0 4px; }
+// ── Toggle Switch ─────────────────────────────────────────────────────────────
+.avail-section { padding: 0 4px; }
 
-.avail-label {
+.avail-header {
   font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
@@ -67,7 +67,7 @@
   margin-bottom: 8px;
 }
 
-.avail-switch-row {
+.avail-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -76,51 +76,51 @@
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   cursor: pointer;
-  transition: border-color 0.1s;
   user-select: none;
+  transition: border-color 0.1s;
 
-  &:hover { border-color: var(--blood-red); }
+  &:hover { border-color: var(--blood-pale); }
+  &:active { transform: scale(0.99); }
 
-  .avail-switch-label {
+  .avail-text {
     font-size: 0.875rem;
     font-weight: 700;
-    transition: color 0.1s;
+    font-family: var(--font-body);
+    transition: color 0.08s;
 
-    &.is-available  { color: #16a34a; }
-    &.is-unavailable { color: #dc2626; }
+    &.on  { color: #16a34a; }
+    &.off { color: #dc2626; }
   }
-
-  // The iOS toggle track
-  .toggle-track {
-    width: 44px;
-    height: 24px;
-    border-radius: 999px;
-    background: #dc2626; // default off = red
-    position: relative;
-    transition: background 0.12s ease;
-    flex-shrink: 0;
-
-    &.on { background: #16a34a; }
-
-    .toggle-thumb {
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: white;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-      transition: transform 0.12s ease;
-
-      &.on { transform: translateX(20px); }
-    }
-  }
-
-  &[disabled], &.loading { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
 }
 
-// ── Nav items — same as admin ──────────────────────────────────────────────
+// iOS switch
+.ios-switch {
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: #dc2626;
+  position: relative;
+  transition: background 0.08s ease;
+  flex-shrink: 0;
+
+  &.on { background: #16a34a; }
+
+  .ios-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    transition: transform 0.08s ease;
+  }
+
+  &.on .ios-thumb { transform: translateX(20px); }
+}
+
+// ── Nav ───────────────────────────────────────────────────────────────────────
 .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
 
 .snav-item {
@@ -141,7 +141,6 @@
   text-align: left;
 
   .snav-icon { font-size: 1.1rem; }
-
   .snav-badge {
     margin-left: auto;
     background: var(--blood-red);
@@ -156,25 +155,22 @@
 
   &:hover { background: var(--surface); color: var(--blood-red); }
 
-  // Active = solid red pill (same as admin)
   &.active {
     background: var(--blood-red);
     color: white;
-    border-radius: var(--radius-md);
-
     .snav-badge { background: white; color: var(--blood-red); }
   }
 }
 
-// ── Stats List Panel ───────────────────────────────────────────────────────
-.sidebar-stats-panel {
+// ── Stats Panel ───────────────────────────────────────────────────────────────
+.sidebar-stats {
   background: var(--surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   overflow: hidden;
   margin-top: auto;
 
-  .ssp-title {
+  .ss-title {
     font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
@@ -184,30 +180,26 @@
   }
 }
 
-.ssp-item {
+.ss-item {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 9px 14px;
   border-top: 1px solid var(--border);
+  cursor: pointer;
   transition: background 0.1s;
 
   &:hover { background: white; }
 
-  .ssp-icon { font-size: 1rem; flex-shrink: 0; }
-  .ssp-label { flex: 1; font-size: 12px; font-weight: 600; color: var(--text-muted); }
-
-  .ssp-value {
+  .ss-icon { font-size: 0.95rem; flex-shrink: 0; }
+  .ss-label { flex: 1; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+  .ss-val {
     font-size: 13px;
     font-weight: 800;
-    background: linear-gradient(135deg, var(--blood-red), var(--blood-dark));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-
-    &.pending { background: linear-gradient(135deg, #f97316, #ea580c); -webkit-background-clip: text; background-clip: text; }
-    &.success { background: linear-gradient(135deg, #16a34a, #15803d); -webkit-background-clip: text; background-clip: text; }
-    &.small { font-size: 11px; -webkit-text-fill-color: var(--text-secondary); }
+    color: var(--blood-red);
+    &.warn  { color: #ea580c; }
+    &.green { color: #16a34a; }
+    &.txt   { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
   }
 }
 
@@ -225,7 +217,7 @@
   span { font-size: 0.9rem; }
 }
 
-// Stats cards
+// Stats cards (clickable)
 .stats-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -240,38 +232,54 @@
   align-items: center;
   gap: 14px;
   border: 1px solid var(--border);
+  cursor: pointer;
   transition: all var(--transition-slow);
 
-  &:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  &:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); border-color: var(--blood-pale); }
 
   .sc-icon { font-size: 2rem; }
   .sc-body { flex: 1; }
-
   .sc-value {
-    display: block;
-    font-size: 2rem;
-    line-height: 1;
-    margin-bottom: 2px;
+    display: block; font-size: 2rem; line-height: 1; margin-bottom: 2px;
     background: linear-gradient(135deg, var(--blood-red), var(--blood-dark));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
-
   .sc-label { font-size: 0.8125rem; color: var(--text-muted); }
-
   .sc-trend {
-    font-size: 0.75rem;
-    padding: 3px 8px;
-    border-radius: var(--radius-full);
-    background: var(--surface);
-    color: var(--text-muted);
-    white-space: nowrap;
-    flex-shrink: 0;
+    font-size: 0.75rem; padding: 3px 8px; border-radius: var(--radius-full);
+    background: var(--surface); color: var(--text-muted); white-space: nowrap; flex-shrink: 0;
   }
 }
 
-// Section title
+// Info card
+.info-card {
+  h3 { font-size: 1.4rem; margin-bottom: 16px; }
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.ig-item {
+  .ig-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .ig-val {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+}
+
+// Section titles
 .section-title {
   font-size: 1.1rem;
   margin-bottom: 16px;
@@ -283,108 +291,61 @@
 // Request cards
 .request-card {
   margin-bottom: 16px;
-  position: relative;
-
   &.urgency-border-critical { border-left: 4px solid var(--urgent-critical); }
-  &.urgency-border-urgent   { border-left: 4px solid var(--urgent-high);     }
-  &.urgency-border-normal   { border-left: 4px solid var(--info);            }
+  &.urgency-border-urgent   { border-left: 4px solid var(--urgent-high); }
+  &.urgency-border-normal   { border-left: 4px solid var(--info); }
 }
 
 .rc-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 12px;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
 }
-
 .rc-badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
 .rc-details {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px 20px;
-  margin-bottom: 16px;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px 20px; margin-bottom: 16px;
 }
-
 .rcd-item {
   .rcd-label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text-muted);
-    margin-bottom: 2px;
+    display: block; font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 2px;
   }
-  .rcd-val {
-    font-size: 0.9375rem;
-    color: var(--text-primary);
-    font-weight: 500;
-  }
+  .rcd-val { font-size: 0.9375rem; color: var(--text-primary); font-weight: 500; }
 }
 
 .rc-message {
-  padding: 12px 16px;
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  margin-bottom: 12px;
-  color: var(--text-secondary);
+  padding: 12px 16px; border-radius: var(--radius-md);
+  font-size: 0.9rem; margin-bottom: 12px; color: var(--text-secondary);
 }
-
 .rc-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap;
+  display: flex; gap: 10px; align-items: center;
+  padding-top: 12px; border-top: 1px solid var(--border); flex-wrap: wrap;
 }
-
 .rc-response {
-  padding: 10px 14px;
-  background: var(--success-light);
-  border-radius: var(--radius-md);
-  font-size: 0.875rem;
-  color: var(--success);
-  margin-top: 12px;
+  padding: 10px 14px; background: var(--success-light); border-radius: var(--radius-md);
+  font-size: 0.875rem; color: var(--success); margin-top: 12px;
 }
 
-// Responsive
-@media (max-width: 1200px) {
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-}
+// ── Responsive ────────────────────────────────────────────────────────────────
+@media (max-width: 1200px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .info-grid { grid-template-columns: repeat(2, 1fr); } }
 
 @media (max-width: 1024px) {
   .dashboard { grid-template-columns: 1fr; }
-
-  .sidebar {
-    position: static;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-
+  .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
   .sidebar-inner { padding: 16px; }
-
-  .sidebar-nav {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 4px;
-  }
-
+  .sidebar-nav { flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
   .snav-item { white-space: nowrap; flex-shrink: 0; }
-  .sidebar-stats-panel { display: none; }
+  .sidebar-stats { display: none; }
 }
 
 @media (max-width: 768px) {
   .dashboard-main { padding: 20px 16px; }
   .rc-details { grid-template-columns: 1fr 1fr; }
-  .stats-row { grid-template-columns: 1fr 1fr; }
+  .stats-row, .info-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 480px) {
-  .stats-row { grid-template-columns: 1fr; }
+  .stats-row, .info-grid { grid-template-columns: 1fr; }
   .rc-details { grid-template-columns: 1fr; }
 }

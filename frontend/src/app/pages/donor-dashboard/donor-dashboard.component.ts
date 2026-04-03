@@ -148,6 +148,22 @@ export class DonorDashboardComponent implements OnInit {
     });
   }
 
+  onStatClick(stat: any) {
+    if (stat.label === 'Total Requests') {
+      this.activeTab = 'requests';
+      this.requestFilter = '';
+      this.loadRequests();
+    } else if (stat.label === 'Accepted') {
+      this.activeTab = 'requests';
+      this.requestFilter = 'accepted';
+      this.loadRequests();
+    } else if (stat.label === 'Pending') {
+      this.activeTab = 'requests';
+      this.requestFilter = 'pending';
+      this.loadRequests();
+    }
+  }
+
   initProfileForm() {
     const d = this.donor!;
     this.profileForm = this.fb.group({
