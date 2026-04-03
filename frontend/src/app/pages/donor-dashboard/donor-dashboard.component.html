@@ -5,26 +5,35 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-inner">
-        <div class="sidebar-profile">
-          <div class="avatar xl">{{ userInitial }}</div>
-          <div class="sp-info">
-            <h4>{{ user.name }}</h4>
-            <span class="blood-badge">{{ donor.bloodGroup || '?' }}</span>
+        <!-- Brand header (same as admin) -->
+      <div class="sidebar-brand">
+        <span class="sb-icon">🙸</span>
+        DONOR PANEL
+      </div>
+
+      <div class="sidebar-profile">
+        <div class="avatar xl">{{ userInitial }}</div>
+        <div class="sp-info">
+          <h4>{{ user.name }}</h4>
+          <span class="blood-badge">{{ donor.bloodGroup || '?' }}</span>
+        </div>
+      </div>
+
+      <!-- iOS-style toggle -->
+      <div class="sidebar-avail">
+        <div class="avail-label">Availability Status</div>
+        <div class="avail-switch-row" 
+             (click)="toggleAvailability()"
+             [class.loading]="toggleLoading"
+             [attr.disabled]="toggleLoading ? '' : null">
+          <span class="avail-switch-label" [ngClass]="donor.isAvailable ? 'is-available' : 'is-unavailable'">
+            {{ toggleLoading ? 'Updating...' : (donor.isAvailable ? '🟢 Available' : '🔴 Unavailable') }}
+          </span>
+          <div class="toggle-track" [class.on]="donor.isAvailable">
+            <div class="toggle-thumb" [class.on]="donor.isAvailable"></div>
           </div>
         </div>
-
-        <div class="sidebar-avail">
-          <div class="avail-label">Availability Status</div>
-          <button 
-            class="avail-toggle" 
-            [class.available]="donor.isAvailable"
-            [class.unavailable]="!donor.isAvailable"
-            (click)="toggleAvailability()" 
-            [disabled]="toggleLoading">
-            <span class="avail-dot"></span>
-            <span class="avail-text">{{ toggleLoading ? 'Updating...' : (donor.isAvailable ? 'Available' : 'Unavailable') }}</span>
-          </button>
-        </div>
+      </div>
 
         <nav class="sidebar-nav">
           <button *ngFor="let tab of tabs" class="snav-item" [class.active]="activeTab === tab.id" (click)="activeTab = tab.id">
