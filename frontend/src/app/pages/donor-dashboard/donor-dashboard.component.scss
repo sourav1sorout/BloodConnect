@@ -162,13 +162,15 @@
   }
 }
 
-// ── Stats Panel ───────────────────────────────────────────────────────────────
+// ── Stats Panel (scrollable) ───────────────────────────────────────────────
 .sidebar-stats {
   background: var(--surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   overflow: hidden;
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
 
   .ss-title {
     font-size: 10px;
@@ -177,6 +179,12 @@
     letter-spacing: 0.1em;
     color: var(--text-muted);
     padding: 10px 14px 6px;
+    flex-shrink: 0;
+  }
+
+  .ss-scroll {
+    max-height: 220px;
+    overflow-y: auto;
   }
 }
 
@@ -199,6 +207,7 @@
     color: var(--blood-red);
     &.warn  { color: #ea580c; }
     &.green { color: #16a34a; }
+    &.red   { color: #dc2626; }
     &.txt   { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
   }
 }
@@ -216,6 +225,57 @@
   h2 { font-size: 2rem; }
   span { font-size: 0.9rem; }
 }
+
+// ── Profile Grid (Overview) ───────────────────────────────────────────
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.pg-section-title {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f8f8f8;
+  gap: 8px;
+
+  &:last-child { border-bottom: none; }
+}
+
+.pg-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.pg-val {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.pg-bio {
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-secondary);
+  max-width: 200px;
+  text-align: right;
+}
+
 
 // Stats cards (clickable)
 .stats-row {

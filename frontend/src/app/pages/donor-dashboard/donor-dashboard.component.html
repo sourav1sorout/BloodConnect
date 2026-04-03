@@ -42,33 +42,45 @@
           </button>
         </nav>
 
-        <!-- Stats -->
+        <!-- Quick Stats (scrollable) -->
         <div class="sidebar-stats">
           <div class="ss-title">Quick Stats</div>
-          <div class="ss-item" (click)="activeTab = 'requests'; requestFilter = ''; loadRequests()">
-            <span class="ss-icon">📩</span>
-            <span class="ss-label">Total Requests</span>
-            <strong class="ss-val">{{ stats?.totalRequests || 0 }}</strong>
-          </div>
-          <div class="ss-item" (click)="activeTab = 'requests'; requestFilter = 'pending'; loadRequests()">
-            <span class="ss-icon">⏳</span>
-            <span class="ss-label">Pending</span>
-            <strong class="ss-val warn">{{ pendingCount }}</strong>
-          </div>
-          <div class="ss-item" (click)="activeTab = 'requests'; requestFilter = 'accepted'; loadRequests()">
-            <span class="ss-icon">✅</span>
-            <span class="ss-label">Accepted</span>
-            <strong class="ss-val green">{{ stats?.accepted || 0 }}</strong>
-          </div>
-          <div class="ss-item">
-            <span class="ss-icon">🩸</span>
-            <span class="ss-label">Donations</span>
-            <strong class="ss-val">{{ donor?.totalDonations || 0 }}</strong>
-          </div>
-          <div class="ss-item">
-            <span class="ss-icon">📍</span>
-            <span class="ss-label">City</span>
-            <strong class="ss-val txt">{{ donor?.address?.city || '—' }}</strong>
+          <div class="ss-scroll">
+            <div class="ss-item" (click)="onStatClick('all')">
+              <span class="ss-icon">📩</span>
+              <span class="ss-label">Total Requests</span>
+              <strong class="ss-val">{{ stats?.totalRequests || 0 }}</strong>
+            </div>
+            <div class="ss-item" (click)="onStatClick('pending')">
+              <span class="ss-icon">⏳</span>
+              <span class="ss-label">Pending</span>
+              <strong class="ss-val warn">{{ pendingCount }}</strong>
+            </div>
+            <div class="ss-item" (click)="onStatClick('accepted')">
+              <span class="ss-icon">✅</span>
+              <span class="ss-label">Accepted</span>
+              <strong class="ss-val green">{{ stats?.accepted || 0 }}</strong>
+            </div>
+            <div class="ss-item" (click)="onStatClick('completed')">
+              <span class="ss-icon">🏁</span>
+              <span class="ss-label">Completed</span>
+              <strong class="ss-val">{{ stats?.completed || 0 }}</strong>
+            </div>
+            <div class="ss-item" (click)="onStatClick('rejected')">
+              <span class="ss-icon">❌</span>
+              <span class="ss-label">Rejected</span>
+              <strong class="ss-val red">{{ stats?.rejected || 0 }}</strong>
+            </div>
+            <div class="ss-item" (click)="onStatClick('completed')">
+              <span class="ss-icon">🩸</span>
+              <span class="ss-label">Donations</span>
+              <strong class="ss-val">{{ donor?.totalDonations || 0 }}</strong>
+            </div>
+            <div class="ss-item">
+              <span class="ss-icon">🗓️</span>
+              <span class="ss-label">Member Since</span>
+              <strong class="ss-val txt">{{ donor?.createdAt | date:'MMM yyyy' }}</strong>
+            </div>
           </div>
         </div>
 
@@ -96,7 +108,7 @@
 
         <!-- Stats Cards -->
         <div class="stats-row" *ngIf="stats">
-          <div class="stat-card" *ngFor="let s of statCards" (click)="onStatClick(s)">
+          <div class="stat-card" *ngFor="let s of statCards" (click)="onStatClick(s.filter)">
             <div class="sc-icon">{{ s.icon }}</div>
             <div class="sc-body">
               <strong class="sc-value font-display">{{ s.value }}</strong>
@@ -106,37 +118,39 @@
           </div>
         </div>
 
-        <!-- Donor Info Card -->
-        <div class="info-cards-row mt-6">
-          <div class="card info-card">
-            <h3 class="font-display">My Information</h3>
-            <div class="info-grid">
-              <div class="ig-item">
-                <span class="ig-label">Blood Group</span>
-                <span class="ig-val"><span class="blood-badge">{{ donor?.bloodGroup }}</span></span>
-              </div>
-              <div class="ig-item">
-                <span class="ig-label">Age</span>
-                <span class="ig-val">{{ donor?.age }} yrs</span>
-              </div>
-              <div class="ig-item">
-                <span class="ig-label">Gender</span>
-                <span class="ig-val">{{ donor?.gender }}</span>
-              </div>
-              <div class="ig-item">
-                <span class="ig-label">Weight</span>
-                <span class="ig-val">{{ donor?.weight || '—' }} kg</span>
-              </div>
-              <div class="ig-item">
-                <span class="ig-label">City</span>
-                <span class="ig-val">{{ donor?.address?.city }}, {{ donor?.address?.state }}</span>
-              </div>
-              <div class="ig-item">
-                <span class="ig-label">Status</span>
-                <span class="ig-val">
-                  <span class="status-badge" [class]="donor?.isAvailable ? 'status-available' : 'status-unavailable'">{{ donor?.isAvailable ? 'Available' : 'Unavailable' }}</span>
-                </span>
-              </div>
+        <!-- My Profile Information — ALL registration fields -->
+        <div class="card mt-6">
+          <div class="flex-between mb-4">
+            <h3 class="font-display">My Profile</h3>
+            <button class="btn btn-outline btn-sm" (click)="activeTab='profile'">Edit ✏️</button>
+          </div>
+          <div class="profile-grid">
+            <!-- Personal -->
+            <div class="pg-section">
+              <h4 class="pg-section-title">Personal Details</h4>
+              <div class="pg-row"><span class="pg-label">Blood Group</span><span class="pg-val"><span class="blood-badge">{{ donor?.bloodGroup }}</span></span></div>
+              <div class="pg-row"><span class="pg-label">Age</span><span class="pg-val">{{ donor?.age }} years</span></div>
+              <div class="pg-row"><span class="pg-label">Gender</span><span class="pg-val">{{ donor?.gender }}</span></div>
+              <div class="pg-row"><span class="pg-label">Weight</span><span class="pg-val">{{ donor?.weight ? donor.weight + ' kg' : 'Not specified' }}</span></div>
+              <div class="pg-row"><span class="pg-label">Medical Conditions</span><span class="pg-val">{{ donor?.medicalConditions || 'None' }}</span></div>
+              <div class="pg-row" *ngIf="donor?.bio"><span class="pg-label">Bio</span><span class="pg-val pg-bio">{{ donor?.bio }}</span></div>
+            </div>
+            <!-- Address -->
+            <div class="pg-section">
+              <h4 class="pg-section-title">Location</h4>
+              <div class="pg-row"><span class="pg-label">City</span><span class="pg-val">{{ donor?.address?.city || '—' }}</span></div>
+              <div class="pg-row"><span class="pg-label">State</span><span class="pg-val">{{ donor?.address?.state || '—' }}</span></div>
+              <div class="pg-row" *ngIf="donor?.address?.street"><span class="pg-label">Street</span><span class="pg-val">{{ donor?.address?.street }}</span></div>
+              <div class="pg-row"><span class="pg-label">Pincode</span><span class="pg-val">{{ donor?.address?.pincode || '—' }}</span></div>
+            </div>
+            <!-- Status -->
+            <div class="pg-section">
+              <h4 class="pg-section-title">Account</h4>
+              <div class="pg-row"><span class="pg-label">Status</span><span class="pg-val"><span class="status-badge" [class]="donor?.isAvailable ? 'status-available' : 'status-unavailable'">{{ donor?.isAvailable ? 'Available' : 'Unavailable' }}</span></span></div>
+              <div class="pg-row"><span class="pg-label">Approved</span><span class="pg-val"><span class="status-badge" [class]="donor?.isApproved ? 'status-accepted' : 'status-pending'">{{ donor?.isApproved ? 'Yes' : 'Pending' }}</span></span></div>
+              <div class="pg-row"><span class="pg-label">Total Donations</span><span class="pg-val fw-700">{{ donor?.totalDonations || 0 }}</span></div>
+              <div class="pg-row" *ngIf="donor?.lastDonationDate"><span class="pg-label">Last Donation</span><span class="pg-val">{{ donor?.lastDonationDate | date:'dd MMM yyyy' }}</span></div>
+              <div class="pg-row"><span class="pg-label">Registered</span><span class="pg-val">{{ donor?.createdAt | date:'dd MMM yyyy' }}</span></div>
             </div>
           </div>
         </div>
@@ -244,61 +258,68 @@
         </div>
       </div>
 
-      <!-- ===== PROFILE TAB ===== -->
+      <!-- ===== PROFILE TAB (ALL registration fields) ===== -->
       <div *ngIf="activeTab === 'profile'" class="tab-content animate-fadeIn">
         <div class="tab-header">
           <h2 class="font-display">Edit Donor Profile</h2>
+          <span class="text-muted">Update the information you provided during registration</span>
         </div>
 
         <div class="card" *ngIf="profileForm">
           <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
-            <h4 class="section-title">Personal Information</h4>
+
+            <h4 class="section-title">👤 Personal Information</h4>
             <div class="grid grid-2 gap-4">
               <div class="form-group">
-                <label>Blood Group</label>
+                <label>Blood Group *</label>
                 <select class="form-control" formControlName="bloodGroup">
                   <option *ngFor="let bg of bloodGroups" [value]="bg">{{ bg }}</option>
                 </select>
               </div>
               <div class="form-group">
-                <label>Age</label>
-                <input type="number" class="form-control" formControlName="age" min="18" max="65" />
+                <label>Age *</label>
+                <input type="number" class="form-control" formControlName="age" min="18" max="65" placeholder="18-65 years" />
               </div>
               <div class="form-group">
-                <label>Gender</label>
+                <label>Gender *</label>
                 <select class="form-control" formControlName="gender">
                   <option>Male</option><option>Female</option><option>Other</option>
                 </select>
               </div>
               <div class="form-group">
                 <label>Weight (kg)</label>
-                <input type="number" class="form-control" formControlName="weight" min="50" />
+                <input type="number" class="form-control" formControlName="weight" min="50" placeholder="Minimum 50 kg" />
               </div>
             </div>
 
-            <h4 class="section-title mt-4">Address</h4>
+            <h4 class="section-title mt-6">📍 Location</h4>
             <div class="grid grid-2 gap-4">
               <div class="form-group">
                 <label>City *</label>
-                <input type="text" class="form-control" formControlName="city" />
+                <input type="text" class="form-control" formControlName="city" placeholder="e.g. Mumbai, Delhi" />
               </div>
               <div class="form-group">
                 <label>State *</label>
-                <input type="text" class="form-control" formControlName="state" />
+                <input type="text" class="form-control" formControlName="state" placeholder="e.g. Maharashtra" />
+              </div>
+              <div class="form-group">
+                <label>Street Address</label>
+                <input type="text" class="form-control" formControlName="street" placeholder="House/flat no., area..." />
               </div>
               <div class="form-group">
                 <label>Pincode</label>
-                <input type="text" class="form-control" formControlName="pincode" />
+                <input type="text" class="form-control" formControlName="pincode" placeholder="6-digit pincode" maxlength="6" />
               </div>
             </div>
 
+            <h4 class="section-title mt-6">🏥 Medical & Bio</h4>
             <div class="form-group">
               <label>Bio (optional)</label>
-              <textarea class="form-control" formControlName="bio" rows="3" placeholder="Tell others why you donate..."></textarea>
+              <textarea class="form-control" formControlName="bio" rows="3" placeholder="Share why you donate blood. This appears on your public profile..."></textarea>
             </div>
             <div class="form-group">
               <label>Medical Conditions</label>
-              <input type="text" class="form-control" formControlName="medicalConditions" placeholder="None" />
+              <input type="text" class="form-control" formControlName="medicalConditions" placeholder="None (or list any conditions)" />
             </div>
 
             <div class="alert alert-success" *ngIf="profileSuccess">✅ Profile updated successfully!</div>

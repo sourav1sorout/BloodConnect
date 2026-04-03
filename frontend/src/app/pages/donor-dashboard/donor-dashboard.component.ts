@@ -43,10 +43,10 @@ export class DonorDashboardComponent implements OnInit {
 
   get statCards() {
     return [
-      { icon: '📩', value: this.stats?.totalRequests || 0, label: 'Total Requests', trend: 'All time', color: 'info' },
-      { icon: '✅', value: this.stats?.accepted || 0, label: 'Accepted', trend: `${Math.round((this.stats?.accepted / (this.stats?.totalRequests || 1)) * 100)}%`, color: 'success' },
-      { icon: '🩸', value: this.stats?.totalDonations || 0, label: 'Donations Done', trend: 'Lives saved', color: 'blood' },
-      { icon: '⏳', value: this.stats?.pending || 0, label: 'Pending', trend: 'Awaiting response', color: 'warn' },
+      { icon: '📩', value: this.stats?.totalRequests || 0, label: 'Total Requests', trend: 'All time', color: 'info', filter: 'all' },
+      { icon: '✅', value: this.stats?.accepted || 0, label: 'Accepted', trend: `${Math.round((this.stats?.accepted / (this.stats?.totalRequests || 1)) * 100)}%`, color: 'success', filter: 'accepted' },
+      { icon: '🩸', value: this.stats?.totalDonations || 0, label: 'Donations Done', trend: 'Lives saved', color: 'blood', filter: 'completed' },
+      { icon: '⏳', value: this.stats?.pending || 0, label: 'Pending', trend: 'Awaiting response', color: 'warn', filter: 'pending' },
     ];
   }
 
@@ -148,20 +148,11 @@ export class DonorDashboardComponent implements OnInit {
     });
   }
 
-  onStatClick(stat: any) {
-    if (stat.label === 'Total Requests') {
-      this.activeTab = 'requests';
-      this.requestFilter = '';
-      this.loadRequests();
-    } else if (stat.label === 'Accepted') {
-      this.activeTab = 'requests';
-      this.requestFilter = 'accepted';
-      this.loadRequests();
-    } else if (stat.label === 'Pending') {
-      this.activeTab = 'requests';
-      this.requestFilter = 'pending';
-      this.loadRequests();
-    }
+  onStatClick(filter: string) {
+    if (filter === undefined) return;
+    this.activeTab = 'requests';
+    this.requestFilter = (filter === 'all' || filter === '') ? '' : filter;
+    this.loadRequests();
   }
 
   initProfileForm() {
@@ -173,6 +164,7 @@ export class DonorDashboardComponent implements OnInit {
       weight: [d.weight || ''],
       city: [d.address?.city, Validators.required],
       state: [d.address?.state, Validators.required],
+      street: [d.address?.street || ''],
       pincode: [d.address?.pincode || ''],
       bio: [d.bio || ''],
       medicalConditions: [d.medicalConditions || 'None'],
@@ -189,14 +181,15 @@ export class DonorDashboardComponent implements OnInit {
       gender: v.gender,
       weight: v.weight || undefined,
       address: {
+        street: v.street || '',
         city: v.city,
         state: v.state,
         pincode: v.pincode,
         country: 'India'
-  },
-  bio: v.bio,
-  medicalConditions: v.medicalConditions,
-};
+      },
+      bio: v.bio,
+      medicalConditions: v.medicalConditions,
+    };
     this.donorService.updateProfile(payload).subscribe({
       next: (res) => {
         this.profileLoading = false;
