@@ -16,7 +16,7 @@
           <div class="avatar xl">{{ userInitial }}</div>
           <div class="sp-info">
             <h4>{{ user?.name }}</h4>
-            <span class="blood-badge">{{ donor?.bloodGroup || (user?.role === 'donor' ? '⏳' : '?') }}</span>
+            <span class="blood-badge">{{ donor?.bloodGroup || '?' }}</span>
           </div>
         </div>
 
@@ -24,25 +24,14 @@
         <div class="avail-section">
           <div class="avail-header">AVAILABILITY</div>
           
-          <!-- State: Working/Loaded -->
-          <div class="avail-row" (click)="toggleAvailability()" *ngIf="donor; else toggleLoadingState">
-            <span class="avail-text" [class.on]="donor.isAvailable" [class.off]="!donor.isAvailable">
-              {{ donor.isAvailable ? 'Available' : 'Unavailable' }}
+          <div class="avail-row" (click)="toggleAvailability()">
+            <span class="avail-text" [class.on]="donor?.isAvailable" [class.off]="!donor?.isAvailable">
+              {{ donor?.isAvailable ? 'Available' : 'Unavailable' }}
             </span>
-            <div class="ios-switch" [class.on]="donor.isAvailable">
+            <div class="ios-switch" [class.on]="donor?.isAvailable">
               <div class="ios-thumb"></div>
             </div>
           </div>
-
-          <!-- State: Loading or Not Found -->
-          <ng-template #toggleLoadingState>
-            <div class="avail-row disabled" style="opacity: 0.6; cursor: not-allowed;">
-              <span class="avail-text">{{ user?.role === 'donor' ? 'Syncing...' : 'Not Available' }}</span>
-              <div class="ios-switch " style="background:#ccc">
-                <div class="ios-thumb"></div>
-              </div>
-            </div>
-          </ng-template>
         </div>
 
         <!-- Nav -->
@@ -251,24 +240,14 @@
 
       </div>
 
-      <!-- 3. STATE: PROFILING SYNCING (Donor exists but profile not found yet) -->
-      <div *ngIf="!loadingProfile && !donor && user?.role === 'donor'" class="empty-state-full animate-fadeIn">
-        <div class="empty-icon-main">⚡</div>
-        <h2 class="font-display">Linking Your Profile...</h2>
-        <p>Registration successful! We are currently synchronizing your record with the dashboard.</p>
-        <div class="mt-6 flex gap-4">
-          <button class="btn btn-primary btn-lg" (click)="loadProfile()">🔄 Sync Now</button>
-          <button class="btn btn-ghost btn-lg" routerLink="/home">Back to Home</button>
-        </div>
-      </div>
-
-      <!-- 4. STATE: NOT REGISTERED (User is receiver/other) -->
-      <div *ngIf="!loadingProfile && !donor && user?.role !== 'donor'" class="empty-state-full animate-fadeIn">
+      <!-- Not Registered State -->
+      <div *ngIf="!loadingProfile && !donor" class="empty-state-full animate-fadeIn">
         <div class="empty-icon-main">🛑</div>
-        <h2 class="font-display">Donor Dashboard</h2>
-        <p>You are logged in as <strong>{{ user?.role }}</strong>. Please register as a donor to access this area.</p>
-        <div class="mt-6">
+        <h2 class="font-display">Donor Profile Not Found</h2>
+        <p>It seems you haven't completed your donor registration yet or your session expired.</p>
+        <div class="mt-6 flex gap-4">
           <button class="btn btn-primary btn-lg" routerLink="/donor-register">Register as Donor Now</button>
+          <button class="btn btn-ghost btn-lg" (click)="loadProfile()">🔄 Retry Loading</button>
         </div>
       </div>
 

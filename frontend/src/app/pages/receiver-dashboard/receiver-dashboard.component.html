@@ -88,8 +88,8 @@
           <!-- Card Top (Avatar + Blood Badge) -->
           <div class="dc-top flex justify-between items-start mb-4">
              <div class="avatar xl shadow-md border-4 border-white">
-                <img *ngIf="request.donor.user.avatar" [src]="request.donor.user.avatar" [alt]="request.donor.user.name">
-                <span *ngIf="!request.donor.user.avatar">{{ request.donor.user.name.charAt(0) }}</span>
+                <img *ngIf="request.donor?.user?.avatar" [src]="request.donor.user.avatar" [alt]="request.donor.user.name">
+                <span *ngIf="!request.donor?.user?.avatar">{{ request.donor?.user?.name?.charAt(0) || 'D' }}</span>
              </div>
              <div class="dc-badge">
                 <span class="blood-badge lg shadow-glow">{{ request.bloodGroup }}</span>
@@ -98,7 +98,7 @@
 
           <!-- Card Body (Details) -->
           <div class="dc-body mb-4">
-             <h4 class="dc-name mb-1">{{ request.donor.user.name | titlecase }}</h4>
+             <h4 class="dc-name mb-1">{{ (request.donor?.user?.name || 'Unknown Donor') | titlecase }}</h4>
              <div class="dc-location flex items-center gap-1.5 text-sm mb-3">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>

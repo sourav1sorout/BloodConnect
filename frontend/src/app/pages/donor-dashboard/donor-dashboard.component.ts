@@ -80,10 +80,7 @@ export class DonorDashboardComponent implements OnInit {
       },
       error: (err) => {
         this.loadingProfile = false;
-        // Don't redirect or show "Not Found" yet if the user is a donor
-        if (this.user?.role !== 'donor' && err.status === 404) {
-          this.toast.info('Completing your registration...');
-        } else if (err.status !== 404) {
+        if (err.status !== 404) {
            this.toast.error('Failed to load profile', err.error?.message);
         }
       },

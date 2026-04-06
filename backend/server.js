@@ -44,7 +44,7 @@ app.set('trust proxy', 1);
 // Rate Limiting
 const globalLimiter = rateLimit({
   windowMs: (parseInt(process.env.RATE_LIMIT_WINDOW) || 15) * 60 * 1000,
-  max: parseInt(process.env.RATE_LIMIT_MAX) || 100,
+  max: parseInt(process.env.RATE_LIMIT_MAX) || 1000, // Increased to 1000 for development
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests. Please try again later.' },
@@ -52,7 +52,7 @@ const globalLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 25, // Increased from 10 to 25 login/register attempts per window
+  max: 250, // Increased from 25 to 250 login/register attempts per window
   message: { success: false, message: 'Too many auth attempts. Please try again in 15 minutes.' },
 });
 
