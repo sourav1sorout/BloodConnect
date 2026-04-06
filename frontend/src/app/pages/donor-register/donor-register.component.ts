@@ -101,9 +101,12 @@ export class DonorRegisterComponent implements OnInit {
         // Refresh session to get 'donor' role
         this.authService.getMe().subscribe({
           next: () => {
-            this.loading = false;
             this.toast.success('Registered as Donor!', 'Your profile is pending admin approval.');
-            this.router.navigate(['/dashboard']);
+            // Add slight delay to allow DB sync before moving to dashboard
+            setTimeout(() => {
+              this.loading = false;
+              this.router.navigate(['/dashboard']);
+            }, 800);
           },
           error: () => {
             this.loading = false;
