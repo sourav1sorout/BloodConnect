@@ -97,9 +97,52 @@
 }
 
 .dc-actions {
+  display: none; /* Deprecated in favor of dc-footer */
+}
+
+.dc-footer {
   padding-top: 1.25rem;
   margin-top: 1.25rem;
   border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px; /* Fixes card height consistency */
+  gap: 12px;
+
+  .footer-left { display: flex; align-items: center; }
+  .footer-center { flex: 1; display: flex; justify-content: center; }
+  .footer-right { display: flex; align-items: center; gap: 8px; }
+}
+
+.btn-icon-alt {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: white;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-size: 1.1rem;
+
+  &:hover {
+    border-color: var(--blood-red);
+    color: var(--blood-red);
+    background: #fff5f5;
+    transform: translateY(-2px);
+  }
+
+  &.danger {
+    &:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+      background: #fef2f2;
+    }
+  }
 }
 
 // Clean detail list for request info
