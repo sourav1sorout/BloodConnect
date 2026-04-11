@@ -43,15 +43,15 @@ export class DonorDashboardComponent implements OnInit {
 
   get statCards() {
     return [
-      { id: 'donations', icon: '🏆', value: this.donor?.totalDonations || 0, label: 'Total Donations', trend: 'Lives Saved', color: 'blood', filter: 'completed' },
+      { id: 'donations', icon: '🏆', value: this.donor?.totalDonations || 0, label: 'Total Donations', trend: 'Life Saved', color: 'blood', filter: 'completed' },
       { id: 'pending', icon: '⏳', value: this.stats?.pending || 0, label: 'Pending Requests', trend: 'Awaiting Response', color: 'warn', filter: 'pending' },
-      { id: 'accepted', icon: '✅', value: this.stats?.accepted || 0, label: 'Accepted Requests', trend: 'Scheduled', color: 'success', filter: 'accepted' },
-      { id: 'completed', icon: '🏁', value: this.stats?.completed || 0, label: 'Completed Donations', trend: 'Finished', color: 'primary', filter: 'completed' },
-      { id: 'rejected', icon: '❌', value: this.stats?.rejected || 0, label: 'Rejected Requests', trend: 'Cancelled', color: 'danger', filter: 'rejected' },
-      { id: 'blood', icon: '🩸', value: this.donor?.bloodGroup || '?', label: 'Blood Group', trend: 'Verified', color: 'info', filter: '' },
-      { id: 'status', icon: '🛡️', value: this.donor?.isApproved ? 'Approved' : 'Pending', label: 'Account Status', trend: 'Verification', color: this.donor?.isApproved ? 'success' : 'warn', filter: '' },
-      { id: 'availability', icon: this.donor?.isAvailable ? '🟢' : '🔴', value: this.donor?.isAvailable ? 'Available' : 'Away', label: 'Current Availability', trend: 'Real-time', color: this.donor?.isAvailable ? 'success' : 'danger', filter: '' },
-      { id: 'since', icon: '📅', value: this.donor?.createdAt ? (new Date(this.donor.createdAt).getFullYear()) : '—', label: 'Member Since', trend: 'Join Date', color: 'primary', filter: '' },
+      { id: 'accepted', icon: '✅', value: this.stats?.accepted || 0, label: 'Accepted Requests', trend: 'Next Action', color: 'success', filter: 'accepted' },
+      { id: 'completed', icon: '🏁', value: this.stats?.completed || 0, label: 'Completed Donations', trend: 'Successful', color: 'primary', filter: 'completed' },
+      { id: 'rejected', icon: '❌', value: this.stats?.rejected || 0, label: 'Rejected Requests', trend: 'Declined', color: 'danger', filter: 'rejected' },
+      { id: 'blood', icon: '🩸', value: this.donor?.bloodGroup || '?', label: 'Blood Group', trend: 'Verified Group', color: 'info', filter: '' },
+      { id: 'status', icon: '🛡️', value: this.donor?.isApproved ? 'Approved' : 'Pending', label: 'Account Status', trend: 'Security', color: this.donor?.isApproved ? 'success' : 'warn', filter: '' },
+      { id: 'availability', icon: this.donor?.isAvailable ? '🟢' : '🔴', value: this.donor?.isAvailable ? 'Live' : 'Hidden', label: 'Global Visibility', trend: 'Real-time', color: this.donor?.isAvailable ? 'success' : 'danger', filter: '' },
+      { id: 'since', icon: '📅', value: this.donor?.createdAt ? (new Date(this.donor.createdAt).getFullYear()) : '2024', label: 'Donation Year', trend: 'Member Since', color: 'primary', filter: '' },
     ];
   }
 
