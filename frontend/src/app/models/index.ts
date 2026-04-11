@@ -85,6 +85,7 @@ export interface BloodRequest {
   respondedAt?: string;
   completedAt?: string;
   neededBy: string;
+  isRemovedByRequester?: boolean;
   createdAt: string;
   updatedAt: string;
 }

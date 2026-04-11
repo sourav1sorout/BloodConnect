@@ -70,6 +70,17 @@ export class ReceiverDashboardComponent implements OnInit {
        error: (err) => this.toast.error('Failed', err.error?.message),
      });
   }
+  
+  removeRequest(id: string) {
+    if (!confirm('Are you sure you want to remove this request from your profile?')) return;
+    this.requestService.removeRequest(id).subscribe({
+      next: () => {
+        this.toast.success('Request removed from history');
+        this.loadRequests();
+      },
+      error: (err) => this.toast.error('Failed', err.error?.message),
+    });
+  }
 
   get filteredRequests() {
     if (!this.filter) return this.requests;

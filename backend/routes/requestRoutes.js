@@ -17,5 +17,6 @@ router.get('/:id', validateObjectId('id'), getRequestById);
 router.patch('/:id/respond', validateObjectId('id'), respondToRequest);
 router.patch('/:id/cancel', validateObjectId('id'), cancelRequest);
 router.patch('/:id/complete', validateObjectId('id'), completeRequest);
+router.patch('/:id/remove', validateObjectId('id'), removeRequest);
 
 module.exports = router;

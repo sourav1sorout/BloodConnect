@@ -97,4 +97,13 @@ export class RequestService {
       {}
     );
   }
+  
+  removeRequest(
+    id: string
+  ): Observable<ApiResponse<{ request: BloodRequest }>> {
+    return this.http.patch<ApiResponse<{ request: BloodRequest }>>(
+      `${this.apiUrl}/${id}/remove`,
+      {}
+    );
+  }
 }

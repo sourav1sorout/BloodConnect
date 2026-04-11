@@ -92,7 +92,7 @@ const getMyRequests = asyncHandler(async (req, res) => {
   const { status } = req.query;
   const { skip, page, limit } = getPagination(req.query);
 
-  const filter = { requester: req.user._id };
+  const filter = { requester: req.user._id, isRemovedByRequester: { $ne: true } };
   if (status) filter.status = status;
 
   const [requests, total] = await Promise.all([
@@ -233,6 +233,30 @@ const completeRequest = asyncHandler(async (req, res) => {
 });
 
 /**
+ * @desc    Remove (archive) request from requester's view
+ * @route   PATCH /api/requests/:id/remove
+ * @access  Private
+ */
+const removeRequest = asyncHandler(async (req, res) => {
+  const request = await BloodRequest.findOne({
+    _id: req.params.id,
+    requester: req.user._id,
+  });
+
+  if (!request) throw new AppError('Request not found.', 404);
+  
+  // Only allowed for completed, rejected, or cancelled requests
+  if (!['completed', 'rejected', 'cancelled'].includes(request.status)) {
+    throw new AppError('Only completed, rejected, or cancelled requests can be removed.', 400);
+  }
+
+  request.isRemovedByRequester = true;
+  await request.save();
+
+  successResponse(res, 200, 'Request removed from profile', { request });
+});
+
+/**
  * @desc    Get single request
  * @route   GET /api/requests/:id
  * @access  Private
@@ -264,5 +288,6 @@ module.exports = {
   respondToRequest,
   cancelRequest,
   completeRequest,
+  removeRequest,
   getRequestById,
 };

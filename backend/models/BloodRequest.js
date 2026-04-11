@@ -77,6 +77,10 @@ const bloodRequestSchema = new mongoose.Schema(
       type: Date,
       required: [true, 'Needed by date is required'],
     },
+    isRemovedByRequester: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
@@ -86,7 +90,7 @@ const bloodRequestSchema = new mongoose.Schema(
 );
 
 // Indexes
-bloodRequestSchema.index({ requester: 1, status: 1 });
+bloodRequestSchema.index({ requester: 1, status: 1, isRemovedByRequester: 1 });
 bloodRequestSchema.index({ donor: 1, status: 1 });
 bloodRequestSchema.index({ bloodGroup: 1, status: 1 });
 bloodRequestSchema.index({ status: 1, createdAt: -1 });

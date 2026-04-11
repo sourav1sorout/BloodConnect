@@ -179,3 +179,12 @@
   .grid-stats { grid-template-columns: 1fr 1fr; }
   .donors-grid { grid-template-columns: 1fr; }
 }
+
+.btn-outline-danger {
+  border-color: #ef4444;
+  color: #ef4444;
+  &:hover {
+    background: #ef4444;
+    color: white;
+  }
+}
