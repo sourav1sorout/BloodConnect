@@ -101,7 +101,12 @@ export class RegisterComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        this.errorMsg = err.error?.message || 'Registration failed. Please try again.';
+        if (err.status === 429) {
+          this.errorMsg = 'Too many registration attempts. Please wait 15 minutes and try again.';
+          this.toast.error('Rate Limit Reached', 'Please wait before trying again');
+        } else {
+          this.errorMsg = err.error?.message || 'Registration failed. Please try again.';
+        }
       },
     });
   }
