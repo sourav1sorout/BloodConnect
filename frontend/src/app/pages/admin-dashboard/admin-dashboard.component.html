@@ -376,21 +376,27 @@
               <tr *ngFor="let r of requests || []">
                 <td>
                   <div>
-                    <div style="font-weight:600">{{ r.requester.name }}</div>
-                    <small class="text-muted">{{ r.requester.phone }}</small>
+                    <div style="font-weight:600">{{ r.requester?.name || 'Unknown Requester' }}</div>
+                    <small class="text-muted">{{ r.requester?.phone || r.requesterContact || '—' }}</small>
                   </div>
                 </td>
-                <td>{{ r.donor.user.name || '—' }}</td>
-                <td><span class="blood-badge">{{ r.bloodGroup }}</span></td>
+                <td>{{ r.donor?.user?.name || '—' }}</td>
+                <td><span class="blood-badge">{{ r.bloodGroup || r['bloodgroup'] || '?' }}</span></td>
                 <td>
-                  <div>
-                    <div>{{ r.hospital.name }}</div>
-                    <small class="text-muted">{{ r.hospital.city }}, {{ r.hospital.state }}</small>
+                  <div *ngIf="r.hospital">
+                    <div>{{ r.hospital.name || r['hospitalName'] || '—' }}</div>
+                    <small class="text-muted">{{ r.hospital.city || '—' }}{{ r.hospital.state ? ', ' + r.hospital.state : '' }}</small>
                   </div>
+                  <div *ngIf="!r.hospital && r['hospitalName']">{{ r['hospitalName'] }}</div>
                 </td>
-                <td>{{ r.unitsRequired }}</td>
-                <td><span class="urgency-badge urgency-{{ r.urgency }}">{{ r.urgency }}</span></td>
-                <td><span class="status-badge status-{{ r.status }}">{{ r.status }}</span></td>
+                <td>{{ r.unitsRequired || r['units'] || '—' }}</td>
+                <td>
+                  <span class="urgency-badge" *ngIf="r.urgency" [ngClass]="'urgency-' + r.urgency">
+                    {{ r.urgency }}
+                  </span>
+                  <span *ngIf="!r.urgency">—</span>
+                </td>
+                <td><span class="status-badge" *ngIf="r.status" [ngClass]="'status-' + r.status">{{ r.status }}</span></td>
                 <td>{{ r.neededBy | date:'dd MMM yy' }}</td>
                 <td>{{ r.createdAt | date:'dd MMM' }}</td>
                 <td>
@@ -406,14 +412,8 @@
                       ✕ Reject
                     </button>
                   </div>
-                  <!-- <button
-                    *ngIf="r.status === 'accepted' || r.status === 'pending'"
-                    class="btn btn-ghost btn-sm text-muted"
-                    (click)="cancelRequest(r._id)">
-                    Cancel
-                  </button> -->
-                  <span *ngIf="r.status === 'completed' || r.status === 'cancelled' || r.status === 'rejected'" class="text-muted" style="font-size:0.8rem">
-                    {{ r.status === 'rejected' ? 'Rejected' : '—' }}
+                  <span *ngIf="r.status !== 'pending'" class="text-muted" style="font-size:0.8rem">
+                    {{ r.status | titlecase }}
                   </span>
                 </td>
               </tr>

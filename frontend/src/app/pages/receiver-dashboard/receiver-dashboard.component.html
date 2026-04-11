@@ -78,6 +78,7 @@
         <a routerLink="/search" class="btn btn-primary mt-8 px-10">Search Donors</a>
       </div>
 
+
       <!-- Grid of Request Cards (Donor-Style Grid) -->
       <div *ngIf="!loading && requests.length > 0" 
            class="donors-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
@@ -103,26 +104,37 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
-                {{ request.hospital.city }}, {{ request.hospital.name }}
+                <ng-container *ngIf="request.hospital">
+                   {{ request.hospital.city || '—' }}, {{ request.hospital.name || '—' }}
+                </ng-container>
+                <ng-container *ngIf="!request.hospital">
+                   {{ request['hospitalCity'] || '—' }}, {{ request['hospitalName'] || '—' }}
+                </ng-container>
              </div>
 
              <!-- Request Details - Clean aligned list -->
              <div class="request-details mb-4">
                 <div class="detail-row">
                   <span class="detail-label">Patient</span>
-                  <span class="detail-value">{{ request.patientName }}</span>
+                  <span class="detail-value">{{ request.patientName || request['patient_name'] || '—' }}</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Quantity</span>
-                  <span class="detail-value detail-value--red">{{ request.unitsRequired }} Unit{{ request.unitsRequired > 1 ? 's' : '' }}</span>
+                  <span class="detail-value detail-value--red">
+                    {{ request.unitsRequired || request['units'] || '1' }} 
+                    Unit{{ (request.unitsRequired || request['units']) > 1 ? 's' : '' }}
+                  </span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Urgency</span>
-                  <span class="detail-pill" [ngClass]="'urgency-pill-' + request.urgency">{{ request.urgency | titlecase }}</span>
+                  <span class="detail-pill" *ngIf="request.urgency" [ngClass]="'urgency-pill-' + request.urgency">
+                    {{ request.urgency | titlecase }}
+                  </span>
+                  <span *ngIf="!request.urgency">—</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Needed By</span>
-                  <span class="detail-value">{{ request.neededBy | date:'MMM d, yyyy' }}</span>
+                  <span class="detail-value">{{ (request.neededBy || request['date']) | date:'MMM d, yyyy' }}</span>
                 </div>
              </div>
 
