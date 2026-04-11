@@ -36,7 +36,6 @@ export class DonorDashboardComponent implements OnInit {
   tabs: { id: string; icon: string; label: string; badge: number | null }[] = [
     { id: 'overview', icon: '📊', label: 'Overview', badge: null },
     { id: 'requests', icon: '📩', label: 'Requests', badge: null },
-    { id: 'profile', icon: '👤', label: 'Edit Profile', badge: null },
 ];
 
   get userInitial(): string { return this.user?.name?.charAt(0)?.toUpperCase() || 'D'; }
@@ -44,10 +43,15 @@ export class DonorDashboardComponent implements OnInit {
 
   get statCards() {
     return [
-      { icon: '📩', value: this.stats?.totalRequests || 0, label: 'Total Requests', trend: 'All time', color: 'info', filter: 'all' },
-      { icon: '✅', value: this.stats?.accepted || 0, label: 'Accepted', trend: `${Math.round((this.stats?.accepted / (this.stats?.totalRequests || 1)) * 100)}%`, color: 'success', filter: 'accepted' },
-      { icon: '🩸', value: this.stats?.totalDonations || 0, label: 'Donations Done', trend: 'Lives saved', color: 'blood', filter: 'completed' },
-      { icon: '⏳', value: this.stats?.pending || 0, label: 'Pending', trend: 'Awaiting response', color: 'warn', filter: 'pending' },
+      { id: 'donations', icon: '🏆', value: this.donor?.totalDonations || 0, label: 'Total Donations', trend: 'Lives Saved', color: 'blood', filter: 'completed' },
+      { id: 'pending', icon: '⏳', value: this.stats?.pending || 0, label: 'Pending Requests', trend: 'Awaiting Response', color: 'warn', filter: 'pending' },
+      { id: 'accepted', icon: '✅', value: this.stats?.accepted || 0, label: 'Accepted Requests', trend: 'Scheduled', color: 'success', filter: 'accepted' },
+      { id: 'completed', icon: '🏁', value: this.stats?.completed || 0, label: 'Completed Donations', trend: 'Finished', color: 'primary', filter: 'completed' },
+      { id: 'rejected', icon: '❌', value: this.stats?.rejected || 0, label: 'Rejected Requests', trend: 'Cancelled', color: 'danger', filter: 'rejected' },
+      { id: 'blood', icon: '🩸', value: this.donor?.bloodGroup || '?', label: 'Blood Group', trend: 'Verified', color: 'info', filter: '' },
+      { id: 'status', icon: '🛡️', value: this.donor?.isApproved ? 'Approved' : 'Pending', label: 'Account Status', trend: 'Verification', color: this.donor?.isApproved ? 'success' : 'warn', filter: '' },
+      { id: 'availability', icon: this.donor?.isAvailable ? '🟢' : '🔴', value: this.donor?.isAvailable ? 'Available' : 'Away', label: 'Current Availability', trend: 'Real-time', color: this.donor?.isAvailable ? 'success' : 'danger', filter: '' },
+      { id: 'since', icon: '📅', value: this.donor?.createdAt ? (new Date(this.donor.createdAt).getFullYear()) : '—', label: 'Member Since', trend: 'Join Date', color: 'primary', filter: '' },
     ];
   }
 

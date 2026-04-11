@@ -280,8 +280,8 @@
 // Stats cards (clickable)
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 .stat-card {

@@ -45,17 +45,17 @@
 
         <!-- Quick Stats (scrollable) -->
         <div class="sidebar-stats">
-          <div class="ss-title">Quick Stats</div>
+          <div class="ss-title">Live Metrics</div>
           <div class="ss-scroll">
-            <div class="ss-item" (click)="onStatClick('all')">
-              <span class="ss-icon">📩</span>
-              <span class="ss-label">Total Requests</span>
-              <strong class="ss-val">{{ stats?.totalRequests || 0 }}</strong>
+            <div class="ss-item" (click)="onStatClick('completed')">
+              <span class="ss-icon">🏆</span>
+              <span class="ss-label">Total Donations</span>
+              <strong class="ss-val blood">{{ donor?.totalDonations || 0 }}</strong>
             </div>
             <div class="ss-item" (click)="onStatClick('pending')">
               <span class="ss-icon">⏳</span>
               <span class="ss-label">Pending</span>
-              <strong class="ss-val warn">{{ pendingCount }}</strong>
+              <strong class="ss-val warn">{{ stats?.pending || 0 }}</strong>
             </div>
             <div class="ss-item" (click)="onStatClick('accepted')">
               <span class="ss-icon">✅</span>
@@ -71,11 +71,6 @@
               <span class="ss-icon">❌</span>
               <span class="ss-label">Rejected</span>
               <strong class="ss-val red">{{ stats?.rejected || 0 }}</strong>
-            </div>
-            <div class="ss-item" (click)="onStatClick('completed')">
-              <span class="ss-icon">🩸</span>
-              <span class="ss-label">Donations</span>
-              <strong class="ss-val">{{ donor?.totalDonations || 0 }}</strong>
             </div>
           </div>
         </div>
@@ -114,32 +109,37 @@
             </div>
           </div>
 
-          <!-- My Profile Information -->
-          <div class="card mt-6">
+          <!-- My Profile Information (Read Only) -->
+          <div class="card mt-6 card-surface">
             <div class="flex-between mb-4">
-              <h3 class="font-display">My Profile</h3>
-              <button class="btn btn-outline btn-sm" (click)="activeTab='profile'">Edit ✏️</button>
+              <h3 class="font-display">Donor Status & Information</h3>
+              <div class="status-pill-group">
+                <span class="status-badge" [class]="donor.isAvailable ? 'status-available' : 'status-unavailable'">
+                  {{ donor.isAvailable ? 'Available Now' : 'Currently Away' }}
+                </span>
+                <span class="status-badge" [class]="donor.isApproved ? 'status-accepted' : 'status-pending'">
+                  {{ donor.isApproved ? 'Verified Donor' : 'Pending Verification' }}
+                </span>
+              </div>
             </div>
             <div class="profile-grid">
               <div class="pg-section">
-                <h4 class="pg-section-title">Personal Details</h4>
+                <h4 class="pg-section-title">Donor Profile</h4>
                 <div class="pg-row"><span class="pg-label">Blood Group</span><span class="pg-val"><span class="blood-badge">{{ donor.bloodGroup }}</span></span></div>
                 <div class="pg-row"><span class="pg-label">Age</span><span class="pg-val">{{ donor.age }} years</span></div>
                 <div class="pg-row"><span class="pg-label">Gender</span><span class="pg-val">{{ donor.gender }}</span></div>
-                <div class="pg-row"><span class="pg-label">Weight</span><span class="pg-val">{{ donor.weight || 'Not specified' }} kg</span></div>
-                <div class="pg-row"><span class="pg-label">Medical Conditions</span><span class="pg-val">{{ donor.medicalConditions || 'None' }}</span></div>
+              </div>
+              <div class="pg-section">
+                <h4 class="pg-section-title">Service Details</h4>
+                <div class="pg-row"><span class="pg-label">Total Donations</span><span class="pg-val text-blood font-bold">{{ donor.totalDonations || 0 }}</span></div>
+                <div class="pg-row"><span class="pg-label">Last Active</span><span class="pg-val">{{ donor.updatedAt | date:'dd MMM yyyy' }}</span></div>
+                <div class="pg-row"><span class="pg-label">Member Since</span><span class="pg-val">{{ donor.createdAt | date:'dd MMM yyyy' }}</span></div>
               </div>
               <div class="pg-section">
                 <h4 class="pg-section-title">Location</h4>
                 <div class="pg-row"><span class="pg-label">City</span><span class="pg-val">{{ donor.address?.city || '—' }}</span></div>
                 <div class="pg-row"><span class="pg-label">State</span><span class="pg-val">{{ donor.address?.state || '—' }}</span></div>
-                <div class="pg-row"><span class="pg-label">Pincode</span><span class="pg-val">{{ donor.address?.pincode || '—' }}</span></div>
-              </div>
-              <div class="pg-section">
-                <h4 class="pg-section-title">Account</h4>
-                <div class="pg-row"><span class="pg-label">Status</span><span class="pg-val"><span class="status-badge" [class]="donor.isAvailable ? 'status-available' : 'status-unavailable'">{{ donor.isAvailable ? 'Available' : 'Unavailable' }}</span></span></div>
-                <div class="pg-row"><span class="pg-label">Approved</span><span class="pg-val"><span class="status-badge" [class]="donor.isApproved ? 'status-accepted' : 'status-pending'">{{ donor.isApproved ? 'Yes' : 'Pending' }}</span></span></div>
-                <div class="pg-row"><span class="pg-label">Registered</span><span class="pg-val">{{ donor.createdAt | date:'dd MMM yyyy' }}</span></div>
+                <div class="pg-row"><span class="pg-label">Service Area</span><span class="pg-val">Domestic (India)</span></div>
               </div>
             </div>
           </div>
@@ -217,26 +217,7 @@
           </div>
         </div>
 
-        <!-- ===== PROFILE TAB ===== -->
-        <div *ngIf="activeTab === 'profile'" class="tab-content animate-fadeIn">
-          <div class="tab-header"> <h2 class="font-display">Edit Donor Profile</h2> </div>
-          <div class="card" *ngIf="profileForm">
-            <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
-              <h4 class="section-title">👤 Personal Details</h4>
-              <div class="grid grid-2 gap-4">
-                <div class="form-group"><label>Age *</label><input type="number" class="form-control" formControlName="age" /></div>
-                <div class="form-group"><label>Gender *</label><select class="form-control" formControlName="gender"><option>Male</option><option>Female</option><option>Other</option></select></div>
-                <div class="form-group"><label>Weight (kg)</label><input type="number" class="form-control" formControlName="weight" /></div>
-              </div>
-              <h4 class="section-title mt-6">📍 Location</h4>
-              <div class="grid grid-2 gap-4">
-                 <div class="form-group"><label>City *</label><input type="text" class="form-control" formControlName="city" /></div>
-                 <div class="form-group"><label>State *</label><input type="text" class="form-control" formControlName="state" /></div>
-              </div>
-              <button type="submit" class="btn btn-primary mt-6" [class.btn-loading]="profileLoading">Save Changes</button>
-            </form>
-          </div>
-        </div>
+
 
       </div>
 
