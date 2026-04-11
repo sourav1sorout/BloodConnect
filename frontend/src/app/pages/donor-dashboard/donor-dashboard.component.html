@@ -16,26 +16,16 @@
           <div class="avatar xl">{{ userInitial }}</div>
           <div class="sp-info">
             <h4>{{ user?.name }}</h4>
-            <span class="blood-badge">{{ donor?.bloodGroup || '?' }}</span>
-          </div>
-        </div>
-
-        <!-- Availability Toggle -->
-        <div class="avail-section">
-          <div class="avail-header">AVAILABILITY</div>
-          
-          <div class="avail-row" (click)="toggleAvailability()">
-            <span class="avail-text" [class.on]="donor?.isAvailable" [class.off]="!donor?.isAvailable">
-              {{ donor?.isAvailable ? 'Available' : 'Unavailable' }}
-            </span>
-            <div class="ios-switch" [class.on]="donor?.isAvailable">
-              <div class="ios-thumb"></div>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="blood-badge lg">{{ donor?.bloodGroup || '?' }}</span>
+              <span class="status-badge" [class]="donor?.isApproved ? 'status-accepted' : 'status-pending'">{{ donor?.isApproved ? 'Verified' : 'Pending' }}</span>
             </div>
           </div>
         </div>
 
-        <!-- Nav -->
+        <!-- Navigation -->
         <nav class="sidebar-nav">
+          <div class="snav-label">Main Menu</div>
           <button *ngFor="let tab of tabs" class="snav-item" [class.active]="activeTab === tab.id" (click)="activeTab = tab.id">
             <span class="snav-icon">{{ tab.icon }}</span>
             <span>{{ tab.label }}</span>
@@ -43,34 +33,34 @@
           </button>
         </nav>
 
-        <!-- Quick Stats (scrollable) -->
+        <!-- Quick Metrics -->
         <div class="sidebar-stats">
           <div class="ss-title">Live Metrics</div>
           <div class="ss-scroll">
-            <div class="ss-item" (click)="onStatClick('completed')">
+            <div class="ss-item">
               <span class="ss-icon">🏆</span>
               <span class="ss-label">Total Donations</span>
               <strong class="ss-val blood">{{ donor?.totalDonations || 0 }}</strong>
             </div>
-            <div class="ss-item" (click)="onStatClick('pending')">
+            <div class="ss-item">
               <span class="ss-icon">⏳</span>
               <span class="ss-label">Pending</span>
               <strong class="ss-val warn">{{ stats?.pending || 0 }}</strong>
             </div>
-            <div class="ss-item" (click)="onStatClick('accepted')">
+            <div class="ss-item">
               <span class="ss-icon">✅</span>
               <span class="ss-label">Accepted</span>
-              <strong class="ss-val green">{{ stats?.accepted || 0 }}</strong>
+              <strong class="ss-val success">{{ stats?.accepted || 0 }}</strong>
             </div>
-            <div class="ss-item" (click)="onStatClick('completed')">
+            <div class="ss-item">
               <span class="ss-icon">🏁</span>
               <span class="ss-label">Completed</span>
-              <strong class="ss-val">{{ stats?.completed || 0 }}</strong>
+              <strong class="ss-val primary">{{ stats?.completed || 0 }}</strong>
             </div>
-            <div class="ss-item" (click)="onStatClick('rejected')">
+            <div class="ss-item">
               <span class="ss-icon">❌</span>
               <span class="ss-label">Rejected</span>
-              <strong class="ss-val red">{{ stats?.rejected || 0 }}</strong>
+              <strong class="ss-val danger">{{ stats?.rejected || 0 }}</strong>
             </div>
           </div>
         </div>
@@ -97,50 +87,39 @@
             <span class="text-muted">Donor since {{ donor.createdAt | date:'MMMM yyyy' }}</span>
           </div>
 
-          <!-- Stats Cards -->
-          <div class="stats-row" *ngIf="stats">
-            <div class="stat-card" *ngFor="let s of statCards" (click)="onStatClick(s.filter)">
-              <div class="sc-icon">{{ s.icon }}</div>
-              <div class="sc-body">
-                <strong class="sc-value font-display">{{ s.value }}</strong>
-                <span class="sc-label">{{ s.label }}</span>
+          <!-- 9 Stats Grid (3x3) -->
+          <div class="stats-grid" *ngIf="stats">
+            <div class="stat-card-new" *ngFor="let s of statCards" (click)="onStatClick(s.filter)" [class]="s.color">
+              <div class="scn-top">
+                <span class="scn-icon">{{ s.icon }}</span>
+                <span class="scn-trend">{{ s.trend }}</span>
               </div>
-              <div class="sc-trend" [class]="s.color">{{ s.trend }}</div>
+              <div class="scn-body">
+                <h3 class="scn-value font-display">{{ s.value }}</h3>
+                <p class="scn-label">{{ s.label }}</p>
+              </div>
             </div>
           </div>
 
-          <!-- My Profile Information (Read Only) -->
-          <div class="card mt-6 card-surface">
-            <div class="flex-between mb-4">
-              <h3 class="font-display">Donor Status & Information</h3>
-              <div class="status-pill-group">
-                <span class="status-badge" [class]="donor.isAvailable ? 'status-available' : 'status-unavailable'">
-                  {{ donor.isAvailable ? 'Available Now' : 'Currently Away' }}
-                </span>
-                <span class="status-badge" [class]="donor.isApproved ? 'status-accepted' : 'status-pending'">
-                  {{ donor.isApproved ? 'Verified Donor' : 'Pending Verification' }}
-                </span>
-              </div>
+          <!-- Quick Information Bar -->
+          <div class="info-bar card mt-6">
+            <div class="info-item">
+              <span class="info-label">Current Weight</span>
+              <span class="info-value">{{ donor.weight || '—' }} Kg</span>
             </div>
-            <div class="profile-grid">
-              <div class="pg-section">
-                <h4 class="pg-section-title">Donor Profile</h4>
-                <div class="pg-row"><span class="pg-label">Blood Group</span><span class="pg-val"><span class="blood-badge">{{ donor.bloodGroup }}</span></span></div>
-                <div class="pg-row"><span class="pg-label">Age</span><span class="pg-val">{{ donor.age }} years</span></div>
-                <div class="pg-row"><span class="pg-label">Gender</span><span class="pg-val">{{ donor.gender }}</span></div>
-              </div>
-              <div class="pg-section">
-                <h4 class="pg-section-title">Service Details</h4>
-                <div class="pg-row"><span class="pg-label">Total Donations</span><span class="pg-val text-blood font-bold">{{ donor.totalDonations || 0 }}</span></div>
-                <div class="pg-row"><span class="pg-label">Last Active</span><span class="pg-val">{{ donor.updatedAt | date:'dd MMM yyyy' }}</span></div>
-                <div class="pg-row"><span class="pg-label">Member Since</span><span class="pg-val">{{ donor.createdAt | date:'dd MMM yyyy' }}</span></div>
-              </div>
-              <div class="pg-section">
-                <h4 class="pg-section-title">Location</h4>
-                <div class="pg-row"><span class="pg-label">City</span><span class="pg-val">{{ donor.address?.city || '—' }}</span></div>
-                <div class="pg-row"><span class="pg-label">State</span><span class="pg-val">{{ donor.address?.state || '—' }}</span></div>
-                <div class="pg-row"><span class="pg-label">Service Area</span><span class="pg-val">Domestic (India)</span></div>
-              </div>
+            <div class="info-item">
+              <span class="info-label">Blood Group</span>
+              <span class="info-value text-blood font-bold">{{ donor.bloodGroup }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Profile Status</span>
+              <span class="status-badge" [class]="donor.isApproved ? 'status-accepted' : 'status-pending'">
+                {{ donor.isApproved ? 'Verified Account' : 'Pending Verification' }}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Location</span>
+              <span class="info-value">{{ donor.address?.city || '—' }}, {{ donor.address?.state || '—' }}</span>
             </div>
           </div>
 

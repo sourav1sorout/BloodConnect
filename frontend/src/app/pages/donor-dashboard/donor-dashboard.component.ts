@@ -26,7 +26,6 @@ export class DonorDashboardComponent implements OnInit {
   requestFilter = '';
   requestsLoading = false;
   loadingProfile = true; // New loading state
-  toggleLoading = false;
   profileForm!: FormGroup;
   profileLoading = false;
   profileSuccess = false;
@@ -42,16 +41,18 @@ export class DonorDashboardComponent implements OnInit {
   get pendingCount(): number { return this.donorRequests.filter(r => r.status === 'pending').length; }
 
   get statCards() {
+    const totalReqs = (this.stats?.pending || 0) + (this.stats?.accepted || 0) + (this.stats?.completed || 0) + (this.stats?.rejected || 0);
+
     return [
-      { id: 'donations', icon: '🏆', value: this.donor?.totalDonations || 0, label: 'Total Donations', trend: 'Life Saved', color: 'blood', filter: 'completed' },
+      { id: 'donations', icon: '🏆', value: this.donor?.totalDonations || 0, label: 'Total Donations', trend: 'Lives Saved', color: 'blood', filter: 'completed' },
       { id: 'pending', icon: '⏳', value: this.stats?.pending || 0, label: 'Pending Requests', trend: 'Awaiting Response', color: 'warn', filter: 'pending' },
-      { id: 'accepted', icon: '✅', value: this.stats?.accepted || 0, label: 'Accepted Requests', trend: 'Next Action', color: 'success', filter: 'accepted' },
-      { id: 'completed', icon: '🏁', value: this.stats?.completed || 0, label: 'Completed Donations', trend: 'Successful', color: 'primary', filter: 'completed' },
-      { id: 'rejected', icon: '❌', value: this.stats?.rejected || 0, label: 'Rejected Requests', trend: 'Declined', color: 'danger', filter: 'rejected' },
-      { id: 'blood', icon: '🩸', value: this.donor?.bloodGroup || '?', label: 'Blood Group', trend: 'Verified Group', color: 'info', filter: '' },
-      { id: 'status', icon: '🛡️', value: this.donor?.isApproved ? 'Approved' : 'Pending', label: 'Account Status', trend: 'Security', color: this.donor?.isApproved ? 'success' : 'warn', filter: '' },
-      { id: 'availability', icon: this.donor?.isAvailable ? '🟢' : '🔴', value: this.donor?.isAvailable ? 'Live' : 'Hidden', label: 'Global Visibility', trend: 'Real-time', color: this.donor?.isAvailable ? 'success' : 'danger', filter: '' },
-      { id: 'since', icon: '📅', value: this.donor?.createdAt ? (new Date(this.donor.createdAt).getFullYear()) : '2024', label: 'Donation Year', trend: 'Member Since', color: 'primary', filter: '' },
+      { id: 'accepted', icon: '✅', value: this.stats?.accepted || 0, label: 'Accepted Requests', trend: 'Scheduled', color: 'success', filter: 'accepted' },
+      { id: 'completed', icon: '🏁', value: this.stats?.completed || 0, label: 'Completed Donations', trend: 'Finished', color: 'primary', filter: 'completed' },
+      { id: 'rejected', icon: '❌', value: this.stats?.rejected || 0, label: 'Rejected Requests', trend: 'Cancelled', color: 'danger', filter: 'rejected' },
+      { id: 'total', icon: '📩', value: totalReqs, label: 'Total Requests', trend: 'All Time', color: 'info', filter: '' },
+      { id: 'blood', icon: '🩸', value: this.donor?.bloodGroup || '?', label: 'Blood Group', trend: 'Verified', color: 'info', filter: '' },
+      { id: 'status', icon: '🛡️', value: this.donor?.isApproved ? 'Approved' : 'Pending', label: 'Account Status', trend: 'Verification', color: this.donor?.isApproved ? 'success' : 'warn', filter: '' },
+      { id: 'rating', icon: '⭐', value: this.donor?.rating?.average || '5.0', label: 'Donor Rating', trend: 'From Receivers', color: 'warn', filter: '' },
     ];
   }
 
@@ -121,32 +122,6 @@ export class DonorDashboardComponent implements OnInit {
     if (!this.tabs[1]) return;
     const pending = this.donorRequests.filter(r => r.status === 'pending').length;
     this.tabs[1].badge = pending > 0 ? pending : null;
-  }
-
-  toggleAvailability() {
-    if (!this.donor) return;
-    // Optimistic update — change UI instantly
-    const prevState = this.donor.isAvailable;
-    this.donor.isAvailable = !prevState;
-    this.toggleLoading = true;
-
-    this.donorService.toggleAvailability().subscribe({
-      next: (res) => {
-        this.toggleLoading = false;
-        // Confirm with server value
-        if (this.donor) this.donor.isAvailable = res.data?.isAvailable ?? this.donor.isAvailable;
-        this.toast.success(
-          this.donor?.isAvailable ? '🟢 You are now Available' : '🔴 You are now Unavailable',
-          res.message
-        );
-      },
-      error: () => {
-        // Revert on failure
-        this.toggleLoading = false;
-        if (this.donor) this.donor.isAvailable = prevState;
-        this.toast.error('Failed to update status');
-      },
-    });
   }
 
   respond(id: string, action: 'accepted' | 'rejected', message?: string) {

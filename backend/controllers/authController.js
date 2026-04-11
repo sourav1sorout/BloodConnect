@@ -24,6 +24,27 @@ const register = asyncHandler(async (req, res) => {
   const user = await User.create({ name, email, password, role: role || 'receiver', phone });
   console.log(`✅ User registered: ${email}`);
 
+  // Auto-create donor profile if role is donor
+  if (user.role === 'donor') {
+    try {
+      await Donor.create({
+        user: user._id,
+        bloodGroup: 'O+', // Default placeholder
+        age: 18,         // Default placeholder
+        gender: 'Other', // Default placeholder
+        address: {
+          city: 'Not Specified',
+          state: 'Not Specified'
+        },
+        isAvailable: true,
+        isApproved: false // Requires admin approval
+      });
+      console.log(`📝 Minimal donor profile created for: ${email}`);
+    } catch (err) {
+      console.error('Failed to create default donor profile:', err.message);
+    }
+  }
+
   // Send welcome email (non-blocking)
   sendWelcomeEmail(email, name, user.role).catch((err) =>
     console.error('Welcome email failed:', err.message)

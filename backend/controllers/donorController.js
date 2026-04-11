@@ -34,8 +34,27 @@ const registerDonor = asyncHandler(async (req, res) => {
  * @access  Private (Donor)
  */
 const getMyDonorProfile = asyncHandler(async (req, res) => {
-  const donor = await Donor.findOne({ user: req.user._id })
+  let donor = await Donor.findOne({ user: req.user._id })
     .populate('user', 'name email phone avatar');
+
+  // Self-Healing: If user has 'donor' role but no profile, create a minimal one
+  if (!donor && req.user.role === 'donor') {
+    console.log(`🔧 Self-healing: Creating missing donor profile for user ${req.user._id}`);
+    donor = await Donor.create({
+      user: req.user._id,
+      bloodGroup: 'O+',
+      age: 18,
+      gender: 'Other',
+      address: {
+        city: 'Not Specified',
+        state: 'Not Specified'
+      },
+      isAvailable: true,
+      isApproved: false
+    });
+    // Populate user info for the response
+    donor = await Donor.findById(donor._id).populate('user', 'name email phone avatar');
+  }
 
   if (!donor) {
     throw new AppError('Donor profile not found. Please register as donor.', 404);
