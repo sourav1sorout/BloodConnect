@@ -145,20 +145,21 @@
              </div>
           </div>
 
-           <div class="dc-actions flex gap-2 pt-4 border-t border-slate-50">
-              <a [routerLink]="['/donor', request.donor._id]" class="btn btn-outline btn-sm flex-1">View Donor</a>
+           <div class="dc-actions flex items-center justify-between pt-4 border-t border-slate-50">
+              <a [routerLink]="['/donor', request.donor._id]" class="btn btn-outline btn-sm">View Donor</a>
               
-              <button *ngIf="['completed', 'rejected', 'cancelled'].includes(request.status)"
-                      (click)="removeRequest(request._id)" 
-                      class="btn btn-outline-danger btn-sm flex-1">Remove</button>
-              
-             <!-- Contextual Primary Actions -->
+              <button (click)="removeRequest(request._id)" 
+                      class="btn btn-outline btn-sm">Remove</button>
+           </div>
+           
+           <!-- Primary Actions (If any) -->
+           <div class="mt-3 flex gap-2" *ngIf="request.status === 'pending' || request.status === 'accepted'">
              <button *ngIf="request.status === 'pending'" (click)="cancelRequest(request._id)" 
                      class="btn btn-danger btn-sm px-4" title="Cancel">✕</button>
              
              <button *ngIf="request.status === 'accepted'" (click)="completeRequest(request._id)" 
                      class="btn btn-success btn-sm flex-1">I Received Blood</button>
-          </div>
+           </div>
         </div>
       </div>
 

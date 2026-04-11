@@ -245,11 +245,6 @@ const removeRequest = asyncHandler(async (req, res) => {
 
   if (!request) throw new AppError('Request not found.', 404);
   
-  // Only allowed for completed, rejected, or cancelled requests
-  if (!['completed', 'rejected', 'cancelled'].includes(request.status)) {
-    throw new AppError('Only completed, rejected, or cancelled requests can be removed.', 400);
-  }
-
   request.isRemovedByRequester = true;
   await request.save();
 
